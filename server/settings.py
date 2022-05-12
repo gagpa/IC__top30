@@ -3,6 +3,9 @@ import os
 from pydantic import BaseSettings
 
 RUN_LEVEL = os.getenv("RUN_LEVEL", "dev")
+DEBUG = RUN_LEVEL == 'dev'
+APP_NAME = 'top30-api'
+APP_VERSION = '0.1.0'
 
 
 class ToolConfig:

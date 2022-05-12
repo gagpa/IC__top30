@@ -1,5 +1,13 @@
+from datetime import datetime, timedelta, timezone
+
 from sqlalchemy import Column, Integer
 from sqlalchemy.ext.declarative import declared_attr
+
+TIMEZONE = timezone(timedelta(hours=3))
+
+
+def get_now() -> datetime:
+    return datetime.now(tz=TIMEZONE)
 
 
 class BaseMixin(object):

@@ -1,10 +1,9 @@
 [tool.poetry]
-name = "lumi-bot"
+name = "top30-backend"
 version = "0.1.0"
 description = ""
 authors = [
-    "Igor Beschastnov <beschastnov-iv@mosmetro.ru>",
-    "Nikita Cherenkov <cherenkov-ni@mosmetro.ru>"
+    "Igor Beschastnov <beschastnov-iv@mosmetro.ru>"
 ]
 
 [build-system]
@@ -22,8 +21,8 @@ aiogram = "^2.19"
 SQLAlchemy = {extras = ["asyncio"], version = "^1.4.32"}
 alembic = "^1.7.7"
 asyncpg = "^0.25.0"  # main app
-arq = "^0.22"
-aioredis = ">=1.1.0,<2.0.0"
+aioredis = "^2.0"
+ring = "^0.9.1"
 pydantic = "^1.9.0"
 psycopg2-binary = "^2.9.3"  # alembic
 python-jose = {extras = ["cryptography"], version ="^3.3.0"}

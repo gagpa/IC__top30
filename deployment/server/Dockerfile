@@ -51,4 +51,4 @@ RUN echo "export PATH=\$PATH:~/.local/bin" > /home/user/.bashrc
 
 ENV PYTHONPATH=$PYTHONPATH:/opt/app/server
 
-CMD ["uvicorn", "--uds", "run/gunicorn.sock", "--reload", "--reload-exclude",  ".docker_data", "server.main:app"]
+CMD ["uvicorn", "--host", "0.0.0.0", "--reload", "--reload-exclude",  ".docker_data", "server.main:app"]
