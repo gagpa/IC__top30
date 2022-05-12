@@ -1,6 +1,7 @@
 prod.env
 .env*
 !.env.example
+sketch.py
 
 ### Dev files
 .docker_data

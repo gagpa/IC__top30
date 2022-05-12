@@ -29,3 +29,4 @@ Session = async_scoped_session(async_session_factory, scopefunc=current_task)
 Base: Any = declarative_base()
 
 from .models import *  # pylint: disable=C0413  # isort:skip
+from .app_config import get_app_config  # pylint: disable=C0413  # isort:skip

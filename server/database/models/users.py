@@ -1,5 +1,3 @@
-from datetime import datetime, timedelta, timezone
-
 from sqlalchemy import (
     BigInteger,
     Boolean,
@@ -14,30 +12,21 @@ from sqlalchemy import (
     func,
 )
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import declared_attr, relationship
 
 from .. import Base
-from ..common import check_password, hash_password, is_hashed
+from ..common import check_password, hash_password
 from .base import BaseMixin
-
-TIMEZONE = timezone(timedelta(hours=3))
-
-
-def get_now() -> datetime:
-    return datetime.now(tz=TIMEZONE)
 
 
 class User(BaseMixin, Base):
-    name = Column(String(60))
-    email = Column(String(50))
-    refresh_token = Column(Text, unique=True)
+    name = Column(String(60), nullable=False)
+    email = Column(String(50), nullable=False)
+    refresh_token = Column(Text)
     _password = Column('password', LargeBinary, nullable=False)
 
-    __table_args__ = (
-        CheckConstraint(
-            between(func.octet_length(_password), 59, 60), name='password_simple_bcrypt_check'
-        ),
-    )
+    type = Column(String(50))
+    __mapper_args__ = {'polymorphic_identity': 'user', 'polymorphic_on': type}
 
     def check_password(self, password_: str) -> bool:
         return check_password(password_, self._password)
@@ -55,3 +44,35 @@ class User(BaseMixin, Base):
     @password.setter  # type: ignore
     def password(self, password_: str) -> None:
         self._password = self.password_preprocess(password_)
+
+    __table_args__ = (
+        CheckConstraint(
+            between(func.octet_length(_password), 59, 60),
+            name='password_simple_bcrypt_check',
+        ),
+    )
+
+
+class Coach(User):
+    __tablename__ = 'coaches'
+
+    id = Column("coach_id", Integer, ForeignKey(User.id), primary_key=True)
+
+    students = relationship("Student", back_populates='coach')
+    meetings = relationship('Meeting', back_populates='coach')
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'coach',
+    }
+
+
+class Student(User):
+    id = Column("student_id", Integer, ForeignKey(User.id), primary_key=True)
+
+    coach_id = Column(Integer, ForeignKey(Coach.id))
+    coach = relationship(Coach, back_populates="students")
+    meetings = relationship('Meeting', back_populates='student')
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'student',
+    }
