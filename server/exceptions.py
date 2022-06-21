@@ -1,2 +1,0 @@
-class ServiceError(RuntimeError):
-    pass
