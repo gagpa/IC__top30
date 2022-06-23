@@ -24,7 +24,7 @@ class PostgresAdminRepo(AdminRepo):
         user = cursor.one()[0]
         new_admin = models.Admin(user_id=user.id)
         self.session.add(new_admin)
-        return AdminEntity(user_id=user.id)
+        return AdminEntity(user_id=user.uuid)
 
     async def find(self, user_id: UUID) -> AdminEntity:
         pass
