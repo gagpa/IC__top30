@@ -14,12 +14,19 @@ class AddCoachInRepo(AddCoach):
         self.coach_repo = coach_repo
 
     async def add(
-            self, user_id: UUID, profession: str, specialization: str, experience: str, key_specializations: str,
+            self,
+            user_id: UUID,
+            profession_direction: str,
+            specialization: str,
+            experience: str,
+            profession_competencies: str,
+            total_seats: int,
     ) -> CoachEntity:
         return await self.coach_repo.add(
             user_id=user_id,
-            profession=profession,
+            profession_direction=profession_direction,
             specialization=specialization,
             experience=experience,
-            key_specializations=key_specializations,
+            profession_competencies=profession_competencies,
+            total_seats=total_seats,
         )

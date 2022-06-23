@@ -4,7 +4,7 @@ from uuid import UUID
 
 from jose import jwt
 
-from domain.auth.entity import AccessToken
+from domain.auth.entity import AccessToken, Role
 from .base import AccessTokenGenerator
 
 
@@ -15,10 +15,12 @@ class JWTAccessGenerator(AccessTokenGenerator):
         self.secret_key = secret_key
         self.expires_delta = expires_delta or datetime.timedelta(weeks=1)
 
-    def generate(self, user_id: UUID) -> AccessToken:
+    def generate(self, user_id: UUID, role: str) -> AccessToken:
+        Role(role)  # TODO: валидация
         data = {
             'exp': datetime.datetime.utcnow() + self.expires_delta,
             'user_id': str(user_id),
+            'role': role,
         }
         token = jwt.encode(data, self.secret_key, algorithm=self._ALGORITHM)
         return AccessToken(token)

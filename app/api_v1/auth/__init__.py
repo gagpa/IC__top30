@@ -30,13 +30,12 @@ async def _refresh_token(
 
 @router.post(
     '/sign_in',
-    dependencies=[Depends(dependencies.only__client)],
 )
 async def _sign_in(
         sign_in: client_requests.SignInRequest,
         auth_case: domain.auth.use_cases.auth.AuthUserInService = Depends(dependencies.get__auth_user_in_service_case),
 ):
-    token = await auth_case.auth(login=sign_in.login, password=sign_in.password)
+    token = await auth_case.auth(login=sign_in.email, password=sign_in.password)
     return responses.AccessTokenResponse(
         access_token=token.access_token,
         refresh_token=token.refresh_token,

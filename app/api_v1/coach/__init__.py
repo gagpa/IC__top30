@@ -1,8 +1,11 @@
 import uuid
 
+import fastapi
 from fastapi import APIRouter, Depends, status, Response
 
 import domain
+from api_v1.base.client_requests import Client
+from domain.auth.entity import Role  # TODO : архитектурная ошибка
 from . import (
     client_requests,
     dependencies,
@@ -19,6 +22,7 @@ router = APIRouter(
 @router.get(
     '/{id}',
     response_model=responses.CoachByIDResponse,
+    dependencies=[Depends(dependencies.only__student)],
 )
 async def _find(
         id: uuid.UUID,
@@ -30,15 +34,17 @@ async def _find(
     return responses.CoachByIDResponse(
         data=responses.UserCoach(
             id=id,
-            profession=coach.profession,
+            profession_direction=coach.profession_direction,
             specialization=coach.specialization,
             experience=coach.experience,
-            key_specializations=coach.key_specializations,
+            profession_competencies=coach.profession_competencies,
+            total_seats=coach.total_seats,
             first_name=user.first_name,
             last_name=user.last_name,
             email=user.email,
             phone=user.phone,
             photo=user.photo,
+            patronymic=user.patronymic,
         )
     )
 
@@ -46,31 +52,46 @@ async def _find(
 @router.get(
     '',
     response_model=responses.ListCoachesResponse,
+    dependencies=[Depends(dependencies.only__admin_student)]
 )
 async def _filter(
         page: int = 0,
-        filter_coaches_case: domain.coach.use_cases.filter.FilterCoachsFromRepo =
-        Depends(dependencies.get_filter_coaches_from_repo),
-        find_user_case: domain.user.use_cases.find.FindUserInRepo = Depends(dependencies.get_find_user_in_repo),
+        client: Client = Depends(dependencies.get__client),
+        filter_coaches__case: domain.coach.use_cases.filter.FilterAllCoaches =
+        Depends(dependencies.get__filter_all_coaches),
+        filter_free_coaches__case: domain.coach.use_cases.filter.FilterFreeCoaches =
+        Depends(dependencies.get__filter_free_coaches),
+        find_user__case: domain.user.use_cases.find.FindUserInRepo = Depends(dependencies.get_find_user_in_repo),
 ):
-    coaches = await filter_coaches_case.filter(page=page)
-    users = [await find_user_case.find(coach.user_id) for coach in coaches.items]
+    if client.role == Role.ADMIN:
+        coaches = await filter_coaches__case.filter(page=page)
+    elif client.role == Role.STUDENT:
+        client = await find_user__case.find(client.user_id)  # TODO: Пересмотреть этот момент
+        if client.coach_id:
+            raise fastapi.HTTPException(403, detail='Нет доступа')
+        coaches = await filter_free_coaches__case.filter(page=page)
+    else:
+        raise fastapi.HTTPException(403, detail='Нет доступа')
+
+    users = [await find_user__case.find(coach.user_id) for coach in coaches.items]
     return responses.ListCoachesResponse(
         data=responses.UserCoachList(
             max_page=coaches.max_page,
             total=coaches.total,
             items=[
                 responses.UserCoach(
-                    id=user.id,
-                    email=user.email,
-                    first_name=user.first_name,
-                    last_name=user.last_name,
-                    phone=user.phone,
-                    photo=user.photo,
-                    profession=coach.profession,
+                    id=coach.user_id,
+                    profession_direction=coach.profession_direction,
                     specialization=coach.specialization,
                     experience=coach.experience,
-                    key_specializations=coach.key_specializations,
+                    profession_competencies=coach.profession_competencies,
+                    total_seats=coach.total_seats,
+                    first_name=user.first_name,
+                    last_name=user.last_name,
+                    email=user.email,
+                    phone=user.phone,
+                    photo=user.photo,
+                    patronymic=user.patronymic,
                 )
                 for user, coach in zip(users, coaches)
             ],
@@ -82,6 +103,7 @@ async def _filter(
     '/{id}',
     status_code=status.HTTP_204_NO_CONTENT,
     response_class=Response,
+    dependencies=[Depends(dependencies.only__admin)]
 )
 async def _delete(
         id: uuid.UUID,

@@ -3,18 +3,21 @@ from uuid import UUID
 
 import pydantic
 
+from api_v1.base.responses import ResponseBody
 from helpers.paginated_list import PaginatedList
 
 
-class UserCoach(pydantic.BaseModel):
+class UserCoach(ResponseBody):
     """User - Coach"""
     id: UUID
-    profession: str
+    profession_direction: str
     specialization: str
     experience: str
-    key_specializations: str
+    profession_competencies: str
+    total_seats: int
     first_name: str
     last_name: str
+    patronymic: str
     email: pydantic.EmailStr
     phone: str = pydantic.Field(
         regex='^(\+7|7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$',
@@ -25,13 +28,13 @@ class UserCoach(pydantic.BaseModel):
 UserCoachList = PaginatedList[UserCoach]
 
 
-class ListCoachesResponse(pydantic.BaseModel):
+class ListCoachesResponse(ResponseBody):
     """Список коучей"""
     status: bool = True
     data: UserCoachList
 
 
-class CoachByIDResponse(pydantic.BaseModel):
+class CoachByIDResponse(ResponseBody):
     """Полная информация о коуче"""
     status: bool = True
     data: UserCoach

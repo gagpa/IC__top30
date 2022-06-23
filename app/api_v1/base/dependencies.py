@@ -5,11 +5,12 @@ from fastapi import Depends
 from fastapi import Request, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt
-
+from sqlalchemy.ext.asyncio import AsyncSession
+from uuid import UUID
 import settings
 from db.postgres import create_assync_session_factory
 from . import client_requests
-
+import domain
 
 async def get__config():
     return settings.AppSettings()
@@ -59,8 +60,11 @@ class JWTBearer(HTTPBearer):
         return decoded_token if decoded_token['exp'] >= time.time() else None
 
 
-async def get__client(token: dict = Depends(JWTBearer(secret_key=settings.AppSettings().SECRET_KEY))):
-    return client_requests.Client(
-        user_id=token['user_id'],
-        role=client_requests.Role.ADMIN,
+async def get__client(
+        token: dict = Depends(JWTBearer(secret_key=settings.AppSettings().SECRET_KEY)),
+):
+    client_requests.Client(
+        user_id=UUID(token['user_id']),
+        role=domain.auth.entity.Role(token['role']),
     )
+    return client_requests

@@ -35,12 +35,13 @@ async def _find(
             position=student.position,
             organization=student.organization,
             experience=student.experience,
-            lead=student.lead,
+            supervisor=student.supervisor,
             first_name=user.first_name,
             last_name=user.last_name,
             email=user.email,
             phone=user.phone,
             photo=user.photo,
+            patronymic=user.patronymic,
         )
     )
 
@@ -72,7 +73,8 @@ async def _filter(
                     position=student.position,
                     organization=student.organization,
                     experience=student.experience,
-                    lead=student.lead,
+                    supervisor=student.supervisor,
+                    patronymic=user.patronymic,
                 ) for user, student in zip(users, students.items)
             ],
         )

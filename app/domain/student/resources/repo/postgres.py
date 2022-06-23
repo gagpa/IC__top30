@@ -18,7 +18,9 @@ class PostgresStudentRepo(StudentRepo):
         self.session = session
         self.limit = limit
 
-    async def add(self, user_id: UUID, position: str, organization: str, experience: str, lead: str) -> StudentEntity:
+    async def add(
+            self, user_id: UUID, position: str, organization: str, experience: str, supervisor: str,
+    ) -> StudentEntity:
         query = select(models.Student).join(models.User).where(models.User.uuid == user_id)
         cursor = await self.session.execute(query)
         if cursor.one_or_none():
@@ -31,7 +33,7 @@ class PostgresStudentRepo(StudentRepo):
             position=position,
             organization=organization,
             experience=experience,
-            lead=lead,
+            supervisor=supervisor,
         )
         self.session.add(new_student)
         return StudentEntity(
@@ -39,7 +41,7 @@ class PostgresStudentRepo(StudentRepo):
             position=position,
             organization=organization,
             experience=experience,
-            lead=lead,
+            supervisor=supervisor,
         )
 
     async def find(self, user_id: UUID) -> StudentEntity:
@@ -55,7 +57,7 @@ class PostgresStudentRepo(StudentRepo):
             position=student_from_db.position,
             organization=student_from_db.organization,
             experience=student_from_db.experience,
-            lead=student_from_db.lead,
+            supervisor=student_from_db.supervisor,
         )
 
     async def filter(self, coach_id: typing.Optional[UUID] = None, page: int = 0) -> ListStudentEntity:
@@ -73,7 +75,7 @@ class PostgresStudentRepo(StudentRepo):
                     position=student_from_db.position,
                     organization=student_from_db.organization,
                     experience=student_from_db.experience,
-                    lead=student_from_db.lead,
+                    supervisor=student_from_db.supervisor,
                 )
                 for student_from_db in cursor.scalars()
             ]

@@ -1,2 +1,3 @@
-from .base import FilterCoachs
-from .from_repo import FilterCoachsFromRepo
+from .base import FilterCoaches
+from .all import FilterAllCoaches
+from .free import FilterFreeCoaches

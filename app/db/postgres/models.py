@@ -15,6 +15,7 @@ class User(Base):
     password = sql.Column(sql.String, nullable=False)
     first_name = sql.Column(sql.String, nullable=False)
     last_name = sql.Column(sql.String, nullable=False)
+    patronymic = sql.Column(sql.String, nullable=False)
     phone = sql.Column(sql.String, nullable=False)
     email = sql.Column(sql.String, nullable=False)
     photo = sql.Column(sql.String)
@@ -30,10 +31,11 @@ class Coach(Base):
 
     id = sql.Column(sql.Integer, primary_key=True)
     user_id = sql.Column(sql.Integer, sql.ForeignKey('users.id', ondelete='CASCADE'))
-    profession = sql.Column(sql.String)
+    total_seats = sql.Column(sql.Integer)
+    profession_direction = sql.Column(sql.String)
     specialization = sql.Column(sql.String)
     experience = sql.Column(sql.String)
-    key_specializations = sql.Column(sql.String)
+    profession_competencies = sql.Column(sql.String)
     user_data = relationship('User', back_populates='coach_data')
 
 
@@ -45,7 +47,7 @@ class Student(Base):
     position = sql.Column(sql.String)
     organization = sql.Column(sql.String)
     experience = sql.Column(sql.String)
-    lead = sql.Column(sql.String)
+    supervisor = sql.Column(sql.String)
 
     user_data = relationship('User', back_populates='student_data')
 

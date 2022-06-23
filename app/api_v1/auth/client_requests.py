@@ -1,8 +1,8 @@
-import typing
-
 import pydantic
 
+from api_v1.base.client_requests import RequestBody
 
-class SignInRequest(pydantic.BaseModel):
-    login: typing.Union[str, pydantic.EmailStr]
+
+class SignInRequest(RequestBody):
+    email: pydantic.EmailStr
     password: str

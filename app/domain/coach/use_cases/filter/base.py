@@ -2,10 +2,10 @@ from abc import ABC
 
 from domain.coach.entity import ListCoachEntity
 
-__all__ = ['FilterCoachs']
+__all__ = ['FilterCoaches']
 
 
-class FilterCoachs(ABC):
+class FilterCoaches(ABC):
     """Класс для фильтрации коучов"""
 
     async def filter(self, page: int = 0) -> ListCoachEntity:

@@ -11,6 +11,12 @@ class AddCoach(ABC):
 
     @abstractmethod
     async def add(
-            self, user_id: UUID, profession: str, specialization: str, experience: str, key_specializations: str,
+            self,
+            user_id: UUID,
+            profession_direction: str,
+            specialization: str,
+            experience: str,
+            profession_competencies: str,
+            total_seats: int,
     ) -> CoachEntity:
         """Добавить"""

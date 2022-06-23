@@ -20,6 +20,7 @@ class AddUserInRepo(AddUser):
             password: str,
             first_name: str,
             last_name: str,
+            patronymic: str,
             phone: str,
             email: str,
             photo: typing.Optional[str] = None,
@@ -27,5 +28,11 @@ class AddUserInRepo(AddUser):
         """Добавить"""
         hashed_password = self.password_hasher.hashed(password)
         return await self.user_repo.add(
-            password=hashed_password, first_name=first_name, last_name=last_name, phone=phone, email=email, photo=photo,
+            password=hashed_password,
+            first_name=first_name,
+            last_name=last_name,
+            patronymic=patronymic,
+            phone=phone,
+            email=email,
+            photo=photo,
         )

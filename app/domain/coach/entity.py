@@ -7,10 +7,13 @@ from helpers.paginated_list import PaginatedList
 class CoachEntity(BaseEntity):
     """Сущность коуча"""
     user_id: UUID
-    profession: str
+    profession_direction: str
     specialization: str
     experience: str
-    key_specializations: str
+    profession_competencies: str
+    total_seats: int
+
+    # students List[UUID]
 
 
 ListCoachEntity = PaginatedList[CoachEntity]

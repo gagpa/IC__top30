@@ -9,7 +9,7 @@ class StudentEntity(BaseEntity):
     position: str
     organization: str
     experience: str
-    lead: str
-
+    supervisor: str
+    #coach_id
 
 ListStudentEntity = PaginatedList[StudentEntity]

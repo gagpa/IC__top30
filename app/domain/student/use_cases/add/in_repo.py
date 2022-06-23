@@ -13,11 +13,13 @@ class AddStudentInRepo(AddStudent):
     def __init__(self, student_repo: StudentRepo):
         self.student_repo = student_repo
 
-    async def add(self, user_id: UUID, position: str, organization: str, experience: str, lead: str) -> StudentEntity:
+    async def add(
+            self, user_id: UUID, position: str, organization: str, experience: str, supervisor: str,
+    ) -> StudentEntity:
         return await self.student_repo.add(
             user_id=user_id,
             position=position,
             organization=organization,
             experience=experience,
-            lead=lead,
+            supervisor=supervisor,
         )

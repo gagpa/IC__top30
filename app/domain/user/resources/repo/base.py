@@ -16,6 +16,7 @@ class UserRepo(ABC):
             password: str,
             first_name: str,
             last_name: str,
+            patronymic: str,
             phone: str,
             email: pydantic.EmailStr,
             photo: typing.Optional[str] = None,
