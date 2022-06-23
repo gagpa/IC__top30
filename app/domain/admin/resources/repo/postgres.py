@@ -7,7 +7,7 @@ import errors
 from db.postgres import models
 from domain.admin.entities import AdminEntity, ListAdminEntity
 from .base import AdminRepo
-
+from sqlalchemy.exc import NoResultFound
 
 class PostgresAdminRepo(AdminRepo):
 
@@ -21,7 +21,10 @@ class PostgresAdminRepo(AdminRepo):
             raise errors.EntityAlreadyExist
         query_user = select(models.User).where(models.User.uuid == user_id)
         cursor = await self.session.execute(query_user)
-        user = cursor.one()[0]
+        try:
+            user = cursor.one()[0]
+        except NoResultFound:
+            raise errors.EntityNotFounded()
         new_admin = models.Admin(user_id=user.id)
         self.session.add(new_admin)
         return AdminEntity(user_id=user.uuid)
