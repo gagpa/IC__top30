@@ -3,8 +3,10 @@ from uuid import UUID
 
 import pydantic
 
-from helpers.paginated_list import PaginatedList
 from api_v1.base.responses import ResponseBody
+from domain.auth.entity import Role
+from helpers.paginated_list import PaginatedList
+
 
 class UserStudent(ResponseBody):
     """User - Student"""
@@ -14,6 +16,7 @@ class UserStudent(ResponseBody):
     experience: str
     supervisor: str
     coach_id: typing.Optional[UUID] = None
+    role: Role = Role.STUDENT
     first_name: str
     last_name: str
     patronymic: str

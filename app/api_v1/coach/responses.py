@@ -4,6 +4,7 @@ from uuid import UUID
 import pydantic
 
 from api_v1.base.responses import ResponseBody
+from domain.auth.entity import Role
 from helpers.paginated_list import PaginatedList
 
 
@@ -16,6 +17,7 @@ class UserCoach(ResponseBody):
     profession_competencies: str
     total_seats: int
     students_ids: typing.List[UUID]
+    role: Role = Role.COACH
     first_name: str
     last_name: str
     patronymic: str
