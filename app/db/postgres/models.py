@@ -11,7 +11,7 @@ class User(Base):
     __tablename__ = 'users'
 
     id = sql.Column(sql.Integer, primary_key=True)
-    uuid = sql.Column(UUID_field(as_uuid=True), unique=True, nullable=False, default=uuid4())
+    uuid = sql.Column(UUID_field(as_uuid=True), unique=True, nullable=False, default=uuid4)
     password = sql.Column(sql.String, nullable=False)
     first_name = sql.Column(sql.String, nullable=False)
     last_name = sql.Column(sql.String, nullable=False)
