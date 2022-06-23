@@ -93,7 +93,7 @@ async def _filter(
                     photo=user.photo,
                     patronymic=user.patronymic,
                 )
-                for user, coach in zip(users, coaches)
+                for user, coach in zip(users, coaches.items)
             ],
         )
     )
