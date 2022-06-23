@@ -79,7 +79,7 @@ class PostgresCoachRepo(CoachRepo):
         #         subquery = subquery.having(student_count < models.Coach.total_seats).subquery()
         #     query = query.where(models.Coach.id.in_(subquery.id))
 
-        query = query.limit(self.limit).offset((page + 1) * self.limit)
+        query = query.limit(self.limit).offset(page * self.limit)
         cursor = await self.session.execute(query)
         return ListCoachEntity(
             total=1,
