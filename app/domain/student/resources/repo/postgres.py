@@ -71,11 +71,11 @@ class PostgresStudentRepo(StudentRepo):
             max_page=1,
             items=[
                 StudentEntity(
-                    user_id=student_from_db[0].user_data.uuid,
-                    position=student_from_db[0].position,
-                    organization=student_from_db[0].organization,
-                    experience=student_from_db[0].experience,
-                    supervisor=student_from_db[0].supervisor,
+                    user_id=student_from_db.user_data.uuid,
+                    position=student_from_db.position,
+                    organization=student_from_db.organization,
+                    experience=student_from_db.experience,
+                    supervisor=student_from_db.supervisor,
                 )
                 for student_from_db in cursor.scalars()
             ]
