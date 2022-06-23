@@ -43,6 +43,7 @@ async def _find(
             phone=user.phone,
             photo=user.photo,
             patronymic=user.patronymic,
+            students_ids=[],  # TODO: Добавить связь коуч-студенты
         )
     elif client.role == Role.STUDENT:
         user = await find_user__case.find(client.user_id)
