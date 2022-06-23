@@ -12,6 +12,8 @@ def add_handlers(app: FastAPI):
     app.exception_handler(errors.EntityAlreadyExist)(_entity_already_exist)
     app.exception_handler(RequestValidationError)(_request_validation)
     app.exception_handler(HTTPException)(_http_exception)
+    app.exception_handler(AuthenticationError)(_auth_error)
+    app.exception_handler(InvalidPassword)(_invalid_password)
 
 
 async def _entity_not_founded(request: Request, exc: errors.EntityNotFounded):
