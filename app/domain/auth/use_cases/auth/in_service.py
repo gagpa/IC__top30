@@ -30,7 +30,7 @@ class AuthUserInService(AuthUser):
 
     async def auth(self, login: str, password: str) -> AuthToken:
         user_id, hashed_password = await self.authentication_service.auth(login=login)
-        self.password_hasher.validate_password(client_password=password, source_password=hashed_password)
+        self.password_hasher.validate_password(password=password, hashed_password=hashed_password)
         role = await self.authorization_service.auth(user_id)
         access_token = self.access_token_generator.generate(user_id=user_id, role=role.value)
         refresh_token = self.refresh_token_generator.generate()

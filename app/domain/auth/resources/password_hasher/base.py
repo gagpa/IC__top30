@@ -7,5 +7,5 @@ class PasswordHasher(ABC):
     def hashed(self, password: str):
         """Захэшировать пароль"""
 
-    def validate_password(self, client_password: str, source_password: str) -> str:
+    def validate_password(self, password: str, hashed_password: str):
         """Провалидировать пароль"""
