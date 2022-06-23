@@ -63,8 +63,7 @@ class JWTBearer(HTTPBearer):
 async def get__client(
         token: dict = Depends(JWTBearer(secret_key=settings.AppSettings().SECRET_KEY)),
 ):
-    client_requests.Client(
+    return client_requests.Client(
         user_id=UUID(token['user_id']),
         role=domain.auth.entity.Role(token['role']),
     )
-    return client_requests
