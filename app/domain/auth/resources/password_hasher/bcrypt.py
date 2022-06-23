@@ -1,6 +1,7 @@
 from passlib.context import CryptContext
 
 from .base import PasswordHasher
+from .errors import InvalidPassword
 
 
 class BcryptPasswordHasher(PasswordHasher):
@@ -13,4 +14,5 @@ class BcryptPasswordHasher(PasswordHasher):
         return self.pwd_context.hash(password, scheme='bcrypt')
 
     def validate_password(self, password: str, hashed_password: str):
-        self.pwd_context.verify(password, hashed_password)
+        if not self.pwd_context.verify(password, hashed_password):
+            raise InvalidPassword()

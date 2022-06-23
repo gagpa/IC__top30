@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from uuid import UUID
 
+
 class AuthenticationService(ABC):
 
     @abstractmethod

@@ -3,6 +3,8 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
 import errors
+from domain.auth.resources.authentication_service.errors import AuthenticationError
+from domain.auth.resources.password_hasher.errors import InvalidPassword
 
 
 def add_handlers(app: FastAPI):
@@ -69,3 +71,29 @@ async def _http_exception(request: Request, exc: HTTPException):
             },
             status_code=exc.status_code,
         )
+
+
+async def _invalid_password(request: Request, exc: InvalidPassword):
+    return JSONResponse(
+        content={
+            'status': False,
+            'data': {
+                'error': 'auth error',
+                'detail': 'Неверные учётные данные'
+            },
+        },
+        status_code=401,
+    )
+
+
+async def _auth_error(request: Request, exc: AuthenticationError):
+    return JSONResponse(
+        content={
+            'status': False,
+            'data': {
+                'error': 'auth error',
+                'detail': 'Неверные учётные данные'
+            },
+        },
+        status_code=401,
+    )
