@@ -13,6 +13,7 @@ class UserStudent(ResponseBody):
     organization: str
     experience: str
     supervisor: str
+    coach_id: typing.Optional[UUID] = None
     first_name: str
     last_name: str
     patronymic: str

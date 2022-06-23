@@ -15,6 +15,7 @@ class UserCoach(ResponseBody):
     experience: str
     profession_competencies: str
     total_seats: int
+    students_ids: typing.List[UUID]
     first_name: str
     last_name: str
     patronymic: str
