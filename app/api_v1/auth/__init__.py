@@ -37,6 +37,8 @@ async def _sign_in(
 ):
     token = await auth_case.auth(login=sign_in.email, password=sign_in.password)
     return responses.AccessTokenResponse(
-        access_token=token.access_token,
-        refresh_token=token.refresh_token,
+        data=responses.Token(
+            access_token=token.access_token,
+            refresh_token=token.refresh_token,
+        )
     )
