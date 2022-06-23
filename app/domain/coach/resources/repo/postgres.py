@@ -56,6 +56,7 @@ class PostgresCoachRepo(CoachRepo):
         cursor = await self.session.execute(query)
         try:
             coach_from_db: typing.Optional[models.Coach] = cursor.one()
+            coach_from_db = coach_from_db[0]
         except NoResultFound:
             raise errors.EntityNotFounded()
         return CoachEntity(
