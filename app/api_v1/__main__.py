@@ -1,13 +1,23 @@
 import fastapi
 import uvicorn
+from fastapi.middleware.cors import CORSMiddleware
+
 from db.postgres import create_engine, Base
 from settings import AsyncPostgresSettings
-from .router import add_routers
 from .errors import add_handlers
+from .router import add_routers
+
 app = fastapi.FastAPI()
 
 add_routers(app)
 add_handlers(app)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*'],
+)
 
 
 @app.on_event('startup')
