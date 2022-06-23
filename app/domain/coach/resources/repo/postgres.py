@@ -32,7 +32,7 @@ class PostgresCoachRepo(CoachRepo):
             raise errors.EntityAlreadyExist
         query_user = select(models.User).where(models.User.uuid == user_id)
         cursor = await self.session.execute(query_user)
-        user = cursor.one()
+        user = cursor.one()[0]
         new_coach = models.Coach(
             user_id=user.id,
             total_seats=total_seats,

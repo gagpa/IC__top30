@@ -13,7 +13,7 @@ add_routers(app)
 add_handlers(app)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['*'],
+    allow_origins=['*'],  # TODO: Перед prod проверить
     allow_credentials=True,
     allow_methods=['*'],
     allow_headers=['*'],
