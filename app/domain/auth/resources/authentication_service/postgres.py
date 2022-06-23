@@ -1,3 +1,4 @@
+import typing
 from uuid import UUID
 
 from sqlalchemy import select
@@ -14,11 +15,11 @@ class PostgresAuthenticationService(AuthenticationService):
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def auth(self, login: str, password: str) -> UUID:
+    async def auth(self, login: str) -> typing.Tuple[UUID, str]:
         query = select(models.User).where(models.User.email == login)
-        query = query.where(models.User.password == password)
         cursor = await self.session.execute(query)
         try:
-            return cursor.one()[0].uuid
+            user = cursor.one()[0]
+            return user.uuid, user.password
         except NoResultFound:
             raise AuthenticationError()
