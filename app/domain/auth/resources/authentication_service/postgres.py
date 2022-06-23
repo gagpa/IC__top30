@@ -15,7 +15,8 @@ class PostgresAuthenticationService(AuthenticationService):
         self.session = session
 
     async def auth(self, login: str, password: str) -> UUID:
-        query = select(models.User).where(models.User.email == login and models.User.password == password)
+        query = select(models.User).where(models.User.email == login)
+        query = query.where(models.User.password == password)
         cursor = await self.session.execute(query)
         try:
             return cursor.one()[0].uuid
