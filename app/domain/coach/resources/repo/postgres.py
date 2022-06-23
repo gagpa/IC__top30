@@ -4,6 +4,7 @@ from uuid import UUID
 from sqlalchemy import select, func
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 import errors
 from db.postgres import models
@@ -69,7 +70,7 @@ class PostgresCoachRepo(CoachRepo):
         )
 
     async def filter(self, is_free: typing.Optional[bool] = None, page: int = 0) -> ListCoachEntity:
-        query = select(models.Coach)
+        query = select(models.Coach).options(joinedload(models.Coach.user_data))
 
         # if isinstance(is_free, bool):
         #     subquery = select(models.Coach.id, func(models.User).count()).join(models.Coach).group_by(models.Coach.id)
