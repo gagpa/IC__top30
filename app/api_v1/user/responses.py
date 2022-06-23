@@ -4,6 +4,7 @@ from uuid import UUID
 import pydantic
 
 from api_v1.base.responses import ResponseBody
+from domain.auth.entity import Role
 
 
 class SelfCoach(ResponseBody):
@@ -22,6 +23,7 @@ class SelfCoach(ResponseBody):
         regex='^(\+7|7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$',
     )
     photo: typing.Optional[str] = None
+    role: Role = Role.COACH
 
 
 class SelfStudent(ResponseBody):
@@ -39,6 +41,7 @@ class SelfStudent(ResponseBody):
         regex='^(\+7|7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$',
     )
     photo: typing.Optional[str] = None
+    role: Role = Role.STUDENT
 
 
 class SelfAdmin(ResponseBody):
@@ -51,6 +54,7 @@ class SelfAdmin(ResponseBody):
         regex='^(\+7|7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$',
     )
     photo: typing.Optional[str] = None
+    role: Role = Role.ADMIN
 
 
 class SelfResponse(ResponseBody):
