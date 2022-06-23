@@ -9,11 +9,11 @@ from . import (
     responses,
 )
 
-router = APIRouter(prefix='/auth', tags=['Авторизация'])
+router = APIRouter(tags=['Авторизация'])
 
 
 @router.patch(
-    '',
+    '/auth',
     response_model=responses.AccessTokenResponse
 )
 async def _refresh_token(
