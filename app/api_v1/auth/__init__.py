@@ -13,7 +13,7 @@ router = APIRouter(tags=['Авторизация'])
 
 
 @router.patch(
-    '/auth',
+    '/refresh',
     response_model=responses.AccessTokenResponse
 )
 async def _refresh_token(
@@ -23,10 +23,11 @@ async def _refresh_token(
 ):
     token = await refresh_token_case.refresh(user_id=uuid4(), refresh_token=refresh_token)
     return responses.AccessTokenResponse(
-        access_token=token.access_token,
-        refresh_token=token.refresh_token,
+        data=responses.Token(
+            access_token=token.access_token,
+            refresh_token=token.refresh_token,
+        )
     )
-
 
 @router.post(
     '/sign_in',
