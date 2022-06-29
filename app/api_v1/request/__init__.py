@@ -11,8 +11,11 @@ from . import (
     responses,
 )
 
-router = APIRouter(prefix='registration_requests', dependencies=[Depends(dependencies.only__admin)],
-                   )
+router = APIRouter(
+    prefix='registration_requests',
+    dependencies=[Depends(dependencies.only__admin)],
+    tags=['Заявки'],
+)
 
 
 @router.patch(
