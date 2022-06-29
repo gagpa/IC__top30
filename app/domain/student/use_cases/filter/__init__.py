@@ -1,2 +1,3 @@
 from .base import FilterStudents
 from .from_repo import FilterStudentsFromRepo
+from .registration_requests import FilterRegistrationRequestsStudents

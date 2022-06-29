@@ -49,3 +49,8 @@ async def only__student(client: Client = fastapi.Depends(get__client)):
 async def only__admin_student(client: Client = fastapi.Depends(get__client)):
     if client.role not in (auth.entity.Role.ADMIN, auth.entity.Role.STUDENT):
         raise fastapi.HTTPException(403, detail='Нет доступа')
+
+
+async def get__accept_coach_in_repo(session: AsyncSession = fastapi.Depends(get__session)):
+    coach_updater = coach.resources.updater.PostgresCoachUpdater(session=session)
+    return coach.use_cases.accept.AcceptCoachInRepo(coach_updater=coach_updater)

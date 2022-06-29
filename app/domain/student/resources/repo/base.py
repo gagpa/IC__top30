@@ -16,5 +16,10 @@ class StudentRepo(ABC):
     async def find(self, user_id: UUID) -> StudentEntity:
         """Найти студента"""
 
-    async def filter(self, coach_id: typing.Optional[UUID] = None, page: int = 0) -> ListStudentEntity:
+    async def filter(
+            self,
+            has_access: bool = True,
+            coach_id: typing.Optional[UUID] = None,
+            page: int = 0,
+    ) -> ListStudentEntity:
         """Отфильтровать студентов в репозитории"""

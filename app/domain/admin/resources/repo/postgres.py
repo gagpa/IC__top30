@@ -1,13 +1,14 @@
 from uuid import UUID
 
 from sqlalchemy import select
+from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
 import errors
 from db.postgres import models
 from domain.admin.entities import AdminEntity, ListAdminEntity
 from .base import AdminRepo
-from sqlalchemy.exc import NoResultFound
+
 
 class PostgresAdminRepo(AdminRepo):
 

@@ -16,6 +16,7 @@ from domain.auth.use_cases.auth import AuthUserInService
 from domain.auth.use_cases.refresh_token import RefreshTokenInRepo
 from domain.auth.resources.authorization_service import PostgresAuthorizationService
 
+
 async def get__refresh_token_case(
         session: AsyncSession = Depends(get__session),
         secret_key: str = Depends(get__secret_key),

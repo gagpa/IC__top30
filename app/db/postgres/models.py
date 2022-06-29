@@ -19,6 +19,7 @@ class User(Base):
     phone = sql.Column(sql.String, nullable=False)
     email = sql.Column(sql.String, nullable=False)
     photo = sql.Column(sql.String)
+    has_access = sql.Column(sql.Boolean, default=False)
 
     coach_data = relationship('Coach', uselist=False)
     student_data = relationship('Student', uselist=False)

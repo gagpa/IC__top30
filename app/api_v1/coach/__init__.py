@@ -53,7 +53,7 @@ async def _find(
 @router.get(
     '',
     response_model=responses.ListCoachesResponse,
-    dependencies=[Depends(dependencies.only__admin_student)]
+    dependencies=[Depends(dependencies.only__admin_student)],
 )
 async def _filter(
         page: int = 0,
@@ -102,17 +102,17 @@ async def _filter(
 
 
 @router.delete(
-    '/{id}',
+    '/{_id}',
     status_code=status.HTTP_204_NO_CONTENT,
     response_class=Response,
     dependencies=[Depends(dependencies.only__admin)]
 )
 async def _delete(
-        id: uuid.UUID,
+        _id: uuid.UUID,
         delete_coach_case: domain.coach.use_cases.delete.DeleteCoachFromRepo =
         Depends(dependencies.get__delete_coach_from_repo),
         delete_user_case: domain.user.use_cases.delete.DeleteUserFromRepo =
         Depends(dependencies.get__delete_user_from_repo),
 ):
-    await delete_coach_case.delete(user_id=id)
-    await delete_user_case.delete(id=id)
+    await delete_coach_case.delete(user_id=_id)
+    await delete_user_case.delete(id=_id)

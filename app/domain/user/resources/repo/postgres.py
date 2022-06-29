@@ -50,6 +50,7 @@ class PostgresUserRepo(UserRepo):
             phone=new_user.phone,
             email=pydantic.EmailStr(new_user.email),
             photo=new_user.photo,
+            has_access=new_user.has_access,
         )
 
     async def find(self, id: UUID) -> UserEntity:
@@ -66,6 +67,7 @@ class PostgresUserRepo(UserRepo):
             phone=user_from_db.phone,
             email=pydantic.EmailStr(user_from_db.email),
             photo=user_from_db.photo,
+            has_access=user_from_db.has_access,
         )
 
     async def filter(self, page: int = 0) -> ListUserEntity:
@@ -84,6 +86,7 @@ class PostgresUserRepo(UserRepo):
                     phone=user_from_db.phone,
                     email=pydantic.EmailStr(user_from_db.email),
                     photo=user_from_db.photo,
+                    has_access=user_from_db.has_access,
                 )
                 for user_from_db in cursor.scalars()
             ]

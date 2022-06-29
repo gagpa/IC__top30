@@ -22,5 +22,10 @@ class CoachRepo(ABC):
     async def find(self, user_id: UUID) -> CoachEntity:
         """Найти коуча"""
 
-    async def filter(self, is_free: typing.Optional[bool] = None, page: int = 0) -> ListCoachEntity:
+    async def filter(
+            self,
+            has_access: bool = True,
+            is_free: typing.Optional[bool] = None,
+            page: int = 0,
+    ) -> ListCoachEntity:
         """Отфильтровать коучов в репозитории"""

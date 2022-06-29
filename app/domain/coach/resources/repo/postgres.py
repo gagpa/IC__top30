@@ -69,8 +69,13 @@ class PostgresCoachRepo(CoachRepo):
             total_seats=coach_from_db.total_seats
         )
 
-    async def filter(self, is_free: typing.Optional[bool] = None, page: int = 0) -> ListCoachEntity:
-        query = select(models.Coach).options(joinedload(models.Coach.user_data))
+    async def filter(
+            self,
+            has_access: bool = True,
+            is_free: typing.Optional[bool] = None,
+            page: int = 0,
+    ) -> ListCoachEntity:
+        query = select(models.Coach).join(models.User).options(joinedload(models.Coach.user_data))
 
         # if isinstance(is_free, bool):
         #     subquery = select(models.Coach.id, func(models.User).count()).join(models.Coach).group_by(models.Coach.id)
@@ -79,7 +84,7 @@ class PostgresCoachRepo(CoachRepo):
         #     else:
         #         subquery = subquery.having(student_count < models.Coach.total_seats).subquery()
         #     query = query.where(models.Coach.id.in_(subquery.id))
-
+        query = query.where(models.User.has_access == has_access)
         query = query.limit(self.limit).offset(page * self.limit)
         cursor = await self.session.execute(query)
         return ListCoachEntity(

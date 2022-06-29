@@ -60,10 +60,16 @@ class PostgresStudentRepo(StudentRepo):
             supervisor=student_from_db.supervisor,
         )
 
-    async def filter(self, coach_id: typing.Optional[UUID] = None, page: int = 0) -> ListStudentEntity:
-        query = select(models.Student).options(joinedload(models.Student.user_data))
+    async def filter(
+            self,
+            has_access: bool = True,
+            coach_id: typing.Optional[UUID] = None,
+            page: int = 0,
+    ) -> ListStudentEntity:
+        query = select(models.Student).join(models.User).options(joinedload(models.Student.user_data))
         if coach_id:  # TODO: Добавить фильтр
             query = query
+        query = query.where(models.User.has_access == has_access)
         query = query.limit(self.limit).offset(page * self.limit)
         cursor = await self.session.execute(query)
         return ListStudentEntity(

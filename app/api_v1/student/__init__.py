@@ -42,6 +42,7 @@ async def _find(
             phone=user.phone,
             photo=user.photo,
             patronymic=user.patronymic,
+            has_access=user.has_access,
         )
     )
 
@@ -75,6 +76,7 @@ async def _filter(
                     experience=student.experience,
                     supervisor=student.supervisor,
                     patronymic=user.patronymic,
+                    has_access=user.has_access,
                 ) for user, student in zip(users, students.items)
             ],
         )
