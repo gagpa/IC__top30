@@ -3,7 +3,6 @@ import uuid
 from fastapi import APIRouter, status, Response, Depends
 
 import domain
-from domain.auth.entity import Role
 from . import (
 
     client_requests,
@@ -65,8 +64,8 @@ async def _list(
                 photo=user.photo,
                 patronymic=user.patronymic,
                 students_ids=[],
-            ) if data.role == Role.COACH
-            else responses.UserStudent(
+            ) if isinstance(data, domain.coach.entity.CoachEntity) else
+            responses.UserStudent(
                 id=user.id,
                 email=user.email,
                 first_name=user.first_name,
