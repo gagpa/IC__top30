@@ -26,7 +26,7 @@ class RefreshTokenInRepo(RefreshToken):
         self.refresh_token_validator = refresh_token_validator
 
     async def refresh(self, user_id: UUID, role: str, refresh_token: str) -> AuthToken:
-        self.refresh_token_validator.validate(refresh_token)
+        self.refresh_token_validator.validate(user_id=user_id, refresh_token=refresh_token)
         new_refresh_token = self.refresh_token_generator.generate()
         new_access_token = self.access_token_generator.generate(user_id=user_id, role=role)
         return await self.token_updater.update(

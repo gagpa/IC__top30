@@ -6,5 +6,5 @@ class RefreshTokenValidator(ABC):
     """Валдитор токена для обновления"""
 
     @abstractmethod
-    def validate(self, refresh_token: str):
+    def validate(self, user_id: UUID, refresh_token: str):
         """Провалидировать"""
