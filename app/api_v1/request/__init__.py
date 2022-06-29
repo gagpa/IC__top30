@@ -12,7 +12,7 @@ from . import (
 )
 
 router = APIRouter(
-    prefix='registration_requests',
+    prefix='/registration_requests',
     dependencies=[Depends(dependencies.only__admin)],
     tags=['Заявки'],
 )
