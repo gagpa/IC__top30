@@ -17,10 +17,10 @@ router = APIRouter(
 )
 
 
-@router.get(
+@router.patch(
     '/{id}',
     status_code=status.HTTP_204_NO_CONTENT,
-    response_class=Response,
+    # response_class=Response,
 )
 async def _accept(
         _id: uuid.UUID,
