@@ -1,7 +1,7 @@
 import typing
 from uuid import UUID
 
-from sqlalchemy import select, func
+from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
@@ -77,7 +77,10 @@ class PostgresCoachRepo(CoachRepo):
             is_free: typing.Optional[bool] = None,
             page: int = 0,
     ) -> ListCoachEntity:
-        query = select(models.Coach).join(models.User).options(joinedload(models.Coach.user_data))
+        query = select(models.Coach).join(models.User).options(
+            joinedload(models.Coach.user_data),
+            joinedload(models.Coach.students),
+        )
 
         # if isinstance(is_free, bool):
         #     subquery = select(models.Coach.id, func(models.User).count()).join(models.Coach).group_by(models.Coach.id)
@@ -100,7 +103,7 @@ class PostgresCoachRepo(CoachRepo):
                     experience=coach_from_db.experience,
                     profession_competencies=coach_from_db.profession_competencies,
                     total_seats=coach_from_db.total_seats,
-                    students=[student.user_data.uuid async for student in coach_from_db.students]
+                    students=[student.user_data.uuid for student in coach_from_db.students]
                 )
                 for coach_from_db in cursor.scalars()
             ]
