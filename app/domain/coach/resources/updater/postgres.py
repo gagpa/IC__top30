@@ -28,29 +28,32 @@ class PostgresCoachUpdater(CoachUpdater):
             profession_competencies: typing.Optional[str] = None,
             total_seats: typing.Optional[int] = None,
     ):
-        query = update(models.User).where(models.User.uuid == coach_id)
-
+        user_update_obj = {}
         if isinstance(has_access, bool):
-            query.values(has_access=has_access)
+            user_update_obj['has_access'] = has_access
         if first_name:
-            query = query.values(first_name=first_name)
+            user_update_obj['first_name'] = first_name
         if last_name:
-            query = query.values(last_name=last_name)
+            user_update_obj['last_name'] = last_name
         if patronymic:
-            query = query.values(patronymic=patronymic)
+            user_update_obj['patronymic'] = patronymic
         if phone:
-            query = query.values(phone=phone)
+            user_update_obj['phone'] = phone
         if photo:
-            query = query.values(photo=photo)
-        if profession_competencies:
-            query = query.values(profession_competencies=profession_competencies)
-        if specialization:
-            query = query.values(specialization=specialization)
-        if experience:
-            query = query.values(experience=experience)
-        if profession_competencies:
-            query = query.values(profession_competencies=profession_competencies)
-        if total_seats:
-            query = query.values(total_seats=total_seats)
+            user_update_obj['photo'] = photo
+        user_update_query = update(models.User).where(models.User.uuid == coach_id)
+        await self.session.execute(user_update_query.values(**user_update_obj))
 
-        await self.session.execute(query)
+        coach_update_obj = {}
+        if profession_competencies:
+            coach_update_obj['profession_competencies'] = profession_competencies
+        if specialization:
+            coach_update_obj['specialization'] = specialization
+        if experience:
+            coach_update_obj['experience'] = experience
+        if profession_competencies:
+            coach_update_obj['profession_competencies'] = profession_competencies
+        if total_seats:
+            coach_update_obj['total_seats'] = total_seats
+        coach_update_query = update(models.Coach).join(models.User).where(models.User.uuid == coach_id)
+        await self.session.execute(coach_update_query.values(**coach_update_obj))

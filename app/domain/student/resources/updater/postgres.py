@@ -26,25 +26,29 @@ class PostgresStudentUpdater(StudentUpdater):
             experience: typing.Optional[str] = None,
             supervisor: typing.Optional[str] = None,
     ):
-        query = update(models.User).where(models.User.uuid == student_id)
-
+        user_update_obj = {}
         if isinstance(has_access, bool):
-            query = query.values(has_access=has_access)
+            user_update_obj['has_access'] = has_access
         if first_name:
-            query = query.values(first_name=first_name)
+            user_update_obj['first_name'] = first_name
         if last_name:
-            query = query.values(last_name=last_name)
+            user_update_obj['last_name'] = last_name
         if patronymic:
-            query = query.values(patronymic=patronymic)
+            user_update_obj['patronymic'] = patronymic
         if phone:
-            query = query.values(phone=phone)
-        if position:
-            query = query.values(position=position)
-        if experience:
-            query = query.values(experience=experience)
-        if supervisor:
-            query = query.values(supervisor=supervisor)
+            user_update_obj['phone'] = phone
         if photo:
-            query = query.values(photo=photo)
+            user_update_obj['photo'] = photo
+        user_update_query = update(models.User).where(models.User.uuid == student_id)
+        await self.session.execute(user_update_query.values(**user_update_obj))
 
-        await self.session.execute(query)
+        student_update_obj = {}
+        if position:
+            student_update_obj['position'] = position
+        if experience:
+            student_update_obj['experience'] = experience
+        if supervisor:
+            student_update_obj['supervisor'] = supervisor
+
+        student_update_query = update(models.Student).join(models.User).where(models.User.uuid == student_id)
+        await self.session.execute(student_update_query.values(**student_update_obj))
