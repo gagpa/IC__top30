@@ -59,8 +59,8 @@ class PostgresCoachUpdater(CoachUpdater):
             coach_update_obj['total_seats'] = total_seats
         if coach_update_obj:
             subquery = select(models.User.id).where(models.User.uuid == coach_id).subquery()
-            coach_update_query = update(models.Coach).where(models.Coach.user_id.in_(subquery))
+            coach_update_query = update(models.Coach).where(models.Coach.user_id == subquery)
             await self.session.execute(
                 coach_update_query.values(**coach_update_obj),
-                execution_options=immutabledict({"synchronize_session": 'fetch'}),
+                execution_options=immutabledict({'synchronize_session': 'fetch'}),
             )

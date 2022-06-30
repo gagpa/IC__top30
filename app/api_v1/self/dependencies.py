@@ -2,7 +2,7 @@ import fastapi
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api_v1.base.dependencies import get__session
-from domain import coach, user, student
+from domain import admin, coach, user, student
 
 
 async def get__find_coach_in_repo(session: AsyncSession = fastapi.Depends(get__session)):
@@ -28,3 +28,8 @@ async def get__update_student_in_repo(session: AsyncSession = fastapi.Depends(ge
 async def get__update_coach_in_repo(session: AsyncSession = fastapi.Depends(get__session)):
     coach_updater = coach.resources.updater.PostgresCoachUpdater(session)
     return coach.use_cases.update.UpdateCoachInRepo(coach_updater=coach_updater)
+
+
+async def get__update_admin_in_repo(session: AsyncSession = fastapi.Depends(get__session)):
+    admin_updater = admin.resources.updater.PostgresAdminUpdater(session)
+    return admin.use_cases.update.UpdateAdminInRepo(admin_updater=admin_updater)

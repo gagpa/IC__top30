@@ -23,4 +23,15 @@ class UpdateStudentInRepo(UpdateStudent):
             experience: typing.Optional[str] = None,
             supervisor: typing.Optional[str] = None,
     ):
-        await self.student_updater.update(student_id=student_id)
+        await self.student_updater.update(
+            student_id=student_id,
+            has_access=has_access,
+            first_name=first_name,
+            last_name=last_name,
+            patronymic=patronymic,
+            phone=phone,
+            position=position,
+            photo=photo,
+            experience=experience,
+            supervisor=supervisor,
+        )

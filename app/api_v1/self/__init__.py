@@ -81,12 +81,14 @@ async def _find(
     '',
 )
 async def _update(
-        update_fields: typing.Union[client_requests.CoachUpdateFields, client_requests.StudentUpdateFields],
+        update_fields: client_requests.UserUpdateFields,
         client: Client = Depends(get__client),
         update_coach_case: domain.coach.use_cases.update.UpdateCoachInRepo =
         Depends(dependencies.get__update_coach_in_repo),
         update_student_case: domain.student.use_cases.update.UpdateStudentInRepo =
         Depends(dependencies.get__update_student_in_repo),
+        update_admin_case: domain.admin.use_cases.update.UpdateAdminInRepo =
+        Depends(dependencies.get__update_admin_in_repo),
 ):
     if client.role == Role.COACH:
         await update_coach_case.update(
@@ -112,3 +114,13 @@ async def _update(
             experience=update_fields.experience,
             supervisor=update_fields.supervisor,
         )
+    else:
+        await update_admin_case.update(
+            admin_id=client.user_id,
+            first_name=update_fields.first_name,
+            last_name=update_fields.last_name,
+            patronymic=update_fields.patronymic,
+            phone=update_fields.phone,
+            photo=update_fields.photo,
+        )
+        print(3)
