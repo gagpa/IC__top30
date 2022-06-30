@@ -17,7 +17,7 @@ router = APIRouter(
 )
 
 
-@router.put(
+@router.get(
     '/{id}',
     status_code=status.HTTP_204_NO_CONTENT,
     response_class=Response,
