@@ -42,6 +42,7 @@ class PostgresCoachUpdater(CoachUpdater):
             user_update_obj['phone'] = phone
         if photo:
             user_update_obj['photo'] = photo
+        print(user_update_obj)
         if user_update_obj:
             user_update_query = update(models.User).where(models.User.uuid == coach_id)
             await self.session.execute(user_update_query.values(**user_update_obj))

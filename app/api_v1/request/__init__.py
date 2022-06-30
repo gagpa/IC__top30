@@ -20,7 +20,7 @@ router = APIRouter(
 @router.patch(
     '/{_id}',
     status_code=status.HTTP_204_NO_CONTENT,
-    # response_class=Response,
+    response_class=Response,
 )
 async def _accept(
         _id: uuid.UUID,
@@ -36,9 +36,9 @@ async def _accept(
     response_model=responses.ListCoachesStudentsResponse,
 )
 async def _list(
-        filter_coaches_case: domain.coach.use_cases.filter.FilterFreeCoaches =
+        filter_coaches_case: domain.coach.use_cases.filter.FilterRegistrationRequestsCoaches =
         Depends(dependencies.get__filter_requests_coaches),
-        filter_students_case: domain.student.use_cases.filter.FilterStudents =
+        filter_students_case: domain.student.use_cases.filter.FilterRegistrationRequestsStudents =
         Depends(dependencies.get__filter_requests_students),
         find_user__case: domain.user.use_cases.find.FindUserInRepo = Depends(dependencies.get_find_user_in_repo),
 ):
