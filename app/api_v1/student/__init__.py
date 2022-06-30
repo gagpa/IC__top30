@@ -77,6 +77,7 @@ async def _filter(
                     supervisor=student.supervisor,
                     patronymic=user.patronymic,
                     has_access=user.has_access,
+                    coach_id=student.coach_id,
                 ) for user, student in zip(users, students.items)
             ],
         )

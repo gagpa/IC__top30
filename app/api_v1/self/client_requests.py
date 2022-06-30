@@ -1,4 +1,5 @@
 import typing
+from uuid import UUID
 
 import pydantic
 
@@ -14,6 +15,7 @@ class UserUpdateFields(RequestBody):
         regex='^(\+7|7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$',
     )
     photo: typing.Optional[str] = None
+    email: typing.Optional[pydantic.EmailStr] = None
     position: typing.Optional[str] = None
     organization: typing.Optional[str] = None
     experience: typing.Optional[str] = None
@@ -22,4 +24,4 @@ class UserUpdateFields(RequestBody):
     specialization: typing.Optional[str] = None
     profession_competencies: typing.Optional[str] = None
     total_seats: typing.Optional[int] = None
-
+    coach_id: typing.Optional[UUID] = None

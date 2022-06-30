@@ -2,6 +2,8 @@ import typing
 from abc import ABC, abstractmethod
 from uuid import UUID
 
+import pydantic
+
 
 class CoachUpdater(ABC):
 
@@ -15,6 +17,7 @@ class CoachUpdater(ABC):
             patronymic: typing.Optional[str] = None,
             phone: typing.Optional[str] = None,
             photo: typing.Optional[str] = None,
+            email: typing.Optional[pydantic.EmailStr] = None,
             profession_direction: typing.Optional[str] = None,
             specialization: typing.Optional[str] = None,
             experience: typing.Optional[str] = None,

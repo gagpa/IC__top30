@@ -1,6 +1,7 @@
 import typing
 from uuid import UUID
 
+import pydantic
 from sqlalchemy import update, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.util._collections import immutabledict
@@ -22,10 +23,12 @@ class PostgresStudentUpdater(StudentUpdater):
             last_name: typing.Optional[str] = None,
             patronymic: typing.Optional[str] = None,
             phone: typing.Optional[str] = None,
+            email: typing.Optional[pydantic.EmailStr] = None,
             position: typing.Optional[str] = None,
             photo: typing.Optional[str] = None,
             experience: typing.Optional[str] = None,
             supervisor: typing.Optional[str] = None,
+            coach_id: typing.Optional[UUID] = None,
     ):
         user_update_obj = {}
         if isinstance(has_access, bool):
@@ -40,6 +43,8 @@ class PostgresStudentUpdater(StudentUpdater):
             user_update_obj['phone'] = phone
         if photo:
             user_update_obj['photo'] = photo
+        if email:
+            user_update_obj['email'] = str(email)
         if user_update_obj:
             user_update_query = update(models.User).where(models.User.uuid == student_id)
             await self.session.execute(user_update_query.values(**user_update_obj))
@@ -51,6 +56,9 @@ class PostgresStudentUpdater(StudentUpdater):
             student_update_obj['experience'] = experience
         if supervisor:
             student_update_obj['supervisor'] = supervisor
+        if coach_id:
+            student_update_obj['coach_id'] = select(models.Coach.id).join(models.User).where(
+                models.User.uuid == coach_id).subquery()
         if student_update_obj:
             subquery = select(models.User.id).where(models.User.uuid == student_id).subquery()
             student_update_query = update(models.Student).where(models.Student.user_id == subquery)

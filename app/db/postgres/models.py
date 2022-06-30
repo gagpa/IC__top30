@@ -38,6 +38,7 @@ class Coach(Base):
     experience = sql.Column(sql.String)
     profession_competencies = sql.Column(sql.String)
     user_data = relationship('User', back_populates='coach_data')
+    students = relationship('Student', back_populates='coach')
 
 
 class Student(Base):
@@ -49,8 +50,9 @@ class Student(Base):
     organization = sql.Column(sql.String)
     experience = sql.Column(sql.String)
     supervisor = sql.Column(sql.String)
-
+    coach_id = sql.Column(sql.Integer, sql.ForeignKey('coach.id'))
     user_data = relationship('User', back_populates='student_data')
+    coach = relationship('Coach', back_populates='students')
 
 
 class Token(Base):

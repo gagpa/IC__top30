@@ -1,3 +1,4 @@
+import typing
 from uuid import UUID
 
 from helpers.base_entity import BaseEntity
@@ -12,8 +13,7 @@ class CoachEntity(BaseEntity):
     experience: str
     profession_competencies: str
     total_seats: int
-
-    # students List[UUID]
+    students: typing.List[UUID]
 
 
 ListCoachEntity = PaginatedList[CoachEntity]

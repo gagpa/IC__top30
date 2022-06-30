@@ -43,7 +43,7 @@ async def _find(
             phone=user.phone,
             photo=user.photo,
             patronymic=user.patronymic,
-            students_ids=[],  # TODO: Добавить связь коуч-студенты
+            students_ids=coach.students,  # TODO: Добавить связь коуч-студенты
         )
     elif client.role == Role.STUDENT:
         user = await find_user__case.find(client.user_id)
@@ -60,6 +60,7 @@ async def _find(
             phone=user.phone,
             photo=user.photo,
             patronymic=user.patronymic,
+            coach_id=student.coach_id,
         )
     else:
         admin = await find_user__case.find(client.user_id)
@@ -93,6 +94,7 @@ async def _update(
     if client.role == Role.COACH:
         await update_coach_case.update(
             coach_id=client.user_id,
+            email=update_fields.email,
             first_name=update_fields.first_name,
             last_name=update_fields.last_name,
             patronymic=update_fields.patronymic,
@@ -108,11 +110,13 @@ async def _update(
             first_name=update_fields.first_name,
             last_name=update_fields.last_name,
             patronymic=update_fields.patronymic,
+            email=update_fields.email,
             phone=update_fields.phone,
             position=update_fields.position,
             photo=update_fields.photo,
             experience=update_fields.experience,
             supervisor=update_fields.supervisor,
+            coach_id=update_fields.coach_id,
         )
     else:
         await update_admin_case.update(
@@ -123,4 +127,3 @@ async def _update(
             phone=update_fields.phone,
             photo=update_fields.photo,
         )
-        print(3)

@@ -1,6 +1,8 @@
 import typing
 from uuid import UUID
 
+import pydantic
+
 from domain.student.resources.updater import StudentUpdater
 from .base import UpdateStudent
 
@@ -18,10 +20,12 @@ class UpdateStudentInRepo(UpdateStudent):
             last_name: typing.Optional[str] = None,
             patronymic: typing.Optional[str] = None,
             phone: typing.Optional[str] = None,
+            email: typing.Optional[pydantic.EmailStr] = None,
             position: typing.Optional[str] = None,
             photo: typing.Optional[str] = None,
             experience: typing.Optional[str] = None,
             supervisor: typing.Optional[str] = None,
+            coach_id: typing.Optional[UUID] = None,
     ):
         await self.student_updater.update(
             student_id=student_id,
@@ -30,8 +34,10 @@ class UpdateStudentInRepo(UpdateStudent):
             last_name=last_name,
             patronymic=patronymic,
             phone=phone,
+            email=email,
             position=position,
             photo=photo,
             experience=experience,
             supervisor=supervisor,
+            coach_id=coach_id,
         )

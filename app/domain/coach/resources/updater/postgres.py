@@ -1,6 +1,7 @@
 import typing
 from uuid import UUID
 
+import pydantic
 from sqlalchemy import update, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.util._collections import immutabledict
@@ -23,6 +24,7 @@ class PostgresCoachUpdater(CoachUpdater):
             patronymic: typing.Optional[str] = None,
             phone: typing.Optional[str] = None,
             photo: typing.Optional[str] = None,
+            email: typing.Optional[pydantic.EmailStr] = None,
             profession_direction: typing.Optional[str] = None,
             specialization: typing.Optional[str] = None,
             experience: typing.Optional[str] = None,
@@ -38,6 +40,8 @@ class PostgresCoachUpdater(CoachUpdater):
             user_update_obj['last_name'] = last_name
         if patronymic:
             user_update_obj['patronymic'] = patronymic
+        if email:
+            user_update_obj['email'] = str(email)
         if phone:
             user_update_obj['phone'] = phone
         if photo:

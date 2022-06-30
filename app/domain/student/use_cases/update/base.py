@@ -18,5 +18,6 @@ class UpdateStudent(ABC):
             photo: typing.Optional[str] = None,
             experience: typing.Optional[str] = None,
             supervisor: typing.Optional[str] = None,
+            coach_id: typing.Optional[UUID] = None,
     ):
         """Обновить"""
