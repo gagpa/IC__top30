@@ -100,7 +100,7 @@ class PostgresCoachRepo(CoachRepo):
                     experience=coach_from_db.experience,
                     profession_competencies=coach_from_db.profession_competencies,
                     total_seats=coach_from_db.total_seats,
-                    students=[student.user_data.uuid for student in coach_from_db.students]
+                    students=[student.user_data.uuid async for student in coach_from_db.students]
                 )
                 for coach_from_db in cursor.scalars()
             ]
