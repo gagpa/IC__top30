@@ -40,8 +40,9 @@ class PostgresStudentUpdater(StudentUpdater):
             user_update_obj['phone'] = phone
         if photo:
             user_update_obj['photo'] = photo
-        user_update_query = update(models.User).where(models.User.uuid == student_id)
-        await self.session.execute(user_update_query.values(**user_update_obj))
+        if user_update_obj:
+            user_update_query = update(models.User).where(models.User.uuid == student_id)
+            await self.session.execute(user_update_query.values(**user_update_obj))
 
         student_update_obj = {}
         if position:
@@ -50,10 +51,10 @@ class PostgresStudentUpdater(StudentUpdater):
             student_update_obj['experience'] = experience
         if supervisor:
             student_update_obj['supervisor'] = supervisor
-
-        subquery = select(models.User.id).where(models.User.uuid == student_id).subquery()
-        student_update_query = update(models.Student).where(models.Student.user_id.in_(subquery))
-        await self.session.execute(
-            student_update_query.values(**student_update_obj),
-            execution_options=immutabledict({"synchronize_session": 'fetch'}),
-        )
+        if student_update_obj:
+            subquery = select(models.User.id).where(models.User.uuid == student_id).subquery()
+            student_update_query = update(models.Student).where(models.Student.user_id.in_(subquery))
+            await self.session.execute(
+                student_update_query.values(**student_update_obj),
+                execution_options=immutabledict({"synchronize_session": 'fetch'}),
+            )

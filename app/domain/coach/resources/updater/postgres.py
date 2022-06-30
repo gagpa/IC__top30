@@ -42,8 +42,9 @@ class PostgresCoachUpdater(CoachUpdater):
             user_update_obj['phone'] = phone
         if photo:
             user_update_obj['photo'] = photo
-        user_update_query = update(models.User).where(models.User.uuid == coach_id)
-        await self.session.execute(user_update_query.values(**user_update_obj))
+        if user_update_obj:
+            user_update_query = update(models.User).where(models.User.uuid == coach_id)
+            await self.session.execute(user_update_query.values(**user_update_obj))
 
         coach_update_obj = {}
         if profession_competencies:
@@ -56,9 +57,10 @@ class PostgresCoachUpdater(CoachUpdater):
             coach_update_obj['profession_competencies'] = profession_competencies
         if total_seats:
             coach_update_obj['total_seats'] = total_seats
-        subquery = select(models.User.id).where(models.User.uuid == coach_id).subquery()
-        coach_update_query = update(models.Coach).where(models.Coach.user_id.in_(subquery))
-        await self.session.execute(
-            coach_update_query.values(**coach_update_obj),
-            execution_options=immutabledict({"synchronize_session": 'fetch'}),
-        )
+        if coach_update_obj:
+            subquery = select(models.User.id).where(models.User.uuid == coach_id).subquery()
+            coach_update_query = update(models.Coach).where(models.Coach.user_id.in_(subquery))
+            await self.session.execute(
+                coach_update_query.values(**coach_update_obj),
+                execution_options=immutabledict({"synchronize_session": 'fetch'}),
+            )
