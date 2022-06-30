@@ -54,7 +54,8 @@ class PostgresCoachRepo(CoachRepo):
         )
 
     async def find(self, user_id: UUID) -> CoachEntity:
-        query = select(models.Coach).join(models.User).where(models.User.uuid == user_id)
+        query = select(models.Coach).join(models.User).where(models.User.uuid == user_id). \
+            options(joinedload(models.Coach.students))
         cursor = await self.session.execute(query)
         try:
             coach_from_db: typing.Optional[models.Coach] = cursor.one()
@@ -78,9 +79,7 @@ class PostgresCoachRepo(CoachRepo):
             page: int = 0,
     ) -> ListCoachEntity:
         query = select(models.Coach).join(models.User).options(
-            joinedload(models.Coach.user_data),
-            joinedload(models.Coach.students),
-        )
+            joinedload(models.Coach.user_data)).options(joinedload(models.Coach.students))
 
         # if isinstance(is_free, bool):
         #     subquery = select(models.Coach.id, func(models.User).count()).join(models.Coach).group_by(models.Coach.id)
@@ -103,7 +102,7 @@ class PostgresCoachRepo(CoachRepo):
                     experience=coach_from_db.experience,
                     profession_competencies=coach_from_db.profession_competencies,
                     total_seats=coach_from_db.total_seats,
-                    students=[student.user_data.uuid for student in coach_from_db.students]
+                    students=[student.user_data.uuid for student in coach_from_db.students],
                 )
                 for coach_from_db in cursor.scalars()
             ]
