@@ -1,8 +1,9 @@
 import typing
 from uuid import UUID
 
-from sqlalchemy import update
+from sqlalchemy import update, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.util._collections import immutabledict
 
 from db.postgres import models
 from .base import StudentUpdater
@@ -50,5 +51,9 @@ class PostgresStudentUpdater(StudentUpdater):
         if supervisor:
             student_update_obj['supervisor'] = supervisor
 
-        student_update_query = update(models.Student).join(models.User).where(models.User.uuid == student_id)
-        await self.session.execute(student_update_query.values(**student_update_obj))
+        subquery = select(models.User.id).where(models.User.uuid == student_id).subquery()
+        student_update_query = update(models.Student).where(models.Student.user_id.in_(subquery))
+        await self.session.execute(
+            student_update_query.values(**student_update_obj),
+            execution_options=immutabledict({"synchronize_session": 'fetch'}),
+        )

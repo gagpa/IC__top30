@@ -1,8 +1,9 @@
 import typing
 from uuid import UUID
 
-from sqlalchemy import update
+from sqlalchemy import update, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.util._collections import immutabledict
 
 from db.postgres import models
 from .base import CoachUpdater
@@ -55,5 +56,9 @@ class PostgresCoachUpdater(CoachUpdater):
             coach_update_obj['profession_competencies'] = profession_competencies
         if total_seats:
             coach_update_obj['total_seats'] = total_seats
-        coach_update_query = update(models.Coach).join(models.User).where(models.User.uuid == coach_id)
-        await self.session.execute(coach_update_query.values(**coach_update_obj))
+        subquery = select(models.User.id).where(models.User.uuid == coach_id).subquery()
+        coach_update_query = update(models.Coach).where(models.Coach.user_id.in_(subquery))
+        await self.session.execute(
+            coach_update_query.values(**coach_update_obj),
+            execution_options=immutabledict({"synchronize_session": 'fetch'}),
+        )
