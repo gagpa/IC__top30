@@ -50,7 +50,7 @@ class Student(Base):
     organization = sql.Column(sql.String)
     experience = sql.Column(sql.String)
     supervisor = sql.Column(sql.String)
-    coach_id = sql.Column(sql.Integer, sql.ForeignKey('coach.id'))
+    coach_id = sql.Column(sql.Integer, sql.ForeignKey('coaches.id'))
     user_data = relationship('User', back_populates='student_data')
     coach = relationship('Coach', back_populates='students')
 
