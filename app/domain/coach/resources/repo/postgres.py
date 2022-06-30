@@ -96,14 +96,14 @@ class PostgresCoachRepo(CoachRepo):
             max_page=1,
             items=[
                 CoachEntity(
-                    user_id=coach_from_db.user_data.uuid,
-                    profession_direction=coach_from_db.profession_direction,
-                    specialization=coach_from_db.specialization,
-                    experience=coach_from_db.experience,
-                    profession_competencies=coach_from_db.profession_competencies,
-                    total_seats=coach_from_db.total_seats,
-                    students=[student.user_data.uuid for student in coach_from_db.students],
+                    user_id=coach_from_db[0].user_data.uuid,
+                    profession_direction=coach_from_db[0].profession_direction,
+                    specialization=coach_from_db[0].specialization,
+                    experience=coach_from_db[0].experience,
+                    profession_competencies=coach_from_db[0].profession_competencies,
+                    total_seats=coach_from_db[0].total_seats,
+                    students=[student.user_data.uuid for student in coach_from_db[0].students],
                 )
-                for coach_from_db in cursor.scalars()
+                for coach_from_db in cursor.all()
             ]
         )
