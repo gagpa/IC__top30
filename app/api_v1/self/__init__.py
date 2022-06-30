@@ -1,6 +1,4 @@
-import typing
-
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response, status
 
 import domain
 from api_v1.base.client_requests import Client
@@ -79,6 +77,8 @@ async def _find(
 
 @router.put(
     '',
+    status_code=status.HTTP_204_NO_CONTENT,
+    response_class=Response,
 )
 async def _update(
         update_fields: client_requests.UserUpdateFields,
