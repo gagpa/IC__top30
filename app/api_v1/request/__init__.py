@@ -82,3 +82,22 @@ async def _list(
     )
 
     return responses.ListCoachesStudentsResponse(data=data)
+
+
+@router.delete(
+    '/{_id}',
+    status_code=status.HTTP_204_NO_CONTENT,
+    response_class=Response,
+)
+async def _delete(
+        _id: uuid.UUID,
+        delete_student_case: domain.student.use_cases.delete.DeleteStudentFromRepo =
+        Depends(dependencies.get__delete_student_from_repo),
+        delete_coach_case: domain.coach.use_cases.delete.DeleteCoachFromRepo =
+        Depends(dependencies.get__delete_coach_from_repo),
+        delete_user_case: domain.user.use_cases.delete.DeleteUserFromRepo =
+        Depends(dependencies.get__delete_user_from_repo),
+):
+    await delete_coach_case.delete(user_id=_id)
+    await delete_student_case.delete(user_id=_id)
+    await delete_user_case.delete(id=_id)
