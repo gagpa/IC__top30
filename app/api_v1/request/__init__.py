@@ -45,7 +45,7 @@ async def _list(
     coaches = await filter_coaches_case.filter()
     students = await filter_students_case.filter()
     all_requests = coaches.items + students.items
-    users = [await find_user__case.find(coach.user_id) for coach in coaches.items]
+    users = [await find_user__case.find(user.user_id) for user in all_requests]
     data = responses.UserCoachStudentList(
         max_page=coaches.max_page,
         total=coaches.total,
