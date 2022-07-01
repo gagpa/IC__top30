@@ -80,7 +80,8 @@ class PostgresStudentRepo(StudentRepo):
         query = query.where(models.User.has_access == has_access)
         query = query.limit(self.limit).offset(page * self.limit)
         cursor = await self.session.execute(query)
-        coaches_ids = [student.coach_id for student in cursor.scalars() if student.coach_id]
+        students = [student[0] for student in cursor.all()]
+        coaches_ids = [student.coach_id for student in students if student.coach_id]
         coaches_query = select(models.Coach.id, models.User.uuid).join(models.Coach).where(models.Coach.id.in_(coaches_ids))
         coaches_cursor = await self.session.execute(coaches_query)
         coaches_uuids = {coach_id: user_id for coach_id, user_id in coaches_cursor.all()}
@@ -96,6 +97,6 @@ class PostgresStudentRepo(StudentRepo):
                     supervisor=student_from_db.supervisor,
                     coach_id=coaches_uuids.get(student_from_db.coach_id),
                 )
-                for student_from_db in cursor.scalars()
+                for student_from_db in students
             ]
         )
