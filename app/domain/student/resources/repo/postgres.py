@@ -50,6 +50,12 @@ class PostgresStudentRepo(StudentRepo):
         try:
             student_from_db: typing.Optional[models.Student] = cursor.one()
             student_from_db = student_from_db[0]
+            if student_from_db.coach:
+                query = select(models.User.uuid).where(models.User.id == student_from_db.coach_id)
+                cursor = await self.session.execute(query)
+                coach_id = cursor.one()[0]
+            else:
+                coach_id = None
         except NoResultFound:
             raise errors.EntityNotFounded()
         return StudentEntity(
@@ -58,6 +64,7 @@ class PostgresStudentRepo(StudentRepo):
             organization=student_from_db.organization,
             experience=student_from_db.experience,
             supervisor=student_from_db.supervisor,
+            coach_id=coach_id
         )
 
     async def filter(
@@ -72,6 +79,11 @@ class PostgresStudentRepo(StudentRepo):
         query = query.where(models.User.has_access == has_access)
         query = query.limit(self.limit).offset(page * self.limit)
         cursor = await self.session.execute(query)
+        students = cursor.scalars()
+        coaches_ids = [student.coach_id for student in students if student.coach]
+        query = select(models.Coach.id, models.User.uuid).join(models.Coach).where(models.User.id.in_(coaches_ids))
+        cursor = await self.session.execute(query)
+        coaches_uuids = {coach_id: user_id for coach_id, user_id in cursor.scalar()}
         return ListStudentEntity(
             total=1,
             max_page=1,
@@ -82,7 +94,8 @@ class PostgresStudentRepo(StudentRepo):
                     organization=student_from_db.organization,
                     experience=student_from_db.experience,
                     supervisor=student_from_db.supervisor,
+                    coach_id=coaches_uuids.get(student_from_db.coach_id),
                 )
-                for student_from_db in cursor.scalars()
+                for student_from_db in students
             ]
         )
