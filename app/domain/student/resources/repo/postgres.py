@@ -64,7 +64,7 @@ class PostgresStudentRepo(StudentRepo):
             organization=student_from_db.organization,
             experience=student_from_db.experience,
             supervisor=student_from_db.supervisor,
-            coach_id=coach_id
+            coach_id=coach_id,
         )
 
     async def filter(
@@ -81,8 +81,7 @@ class PostgresStudentRepo(StudentRepo):
         cursor = await self.session.execute(query)
         students = cursor.scalars()
         coaches_ids = [student.coach_id for student in students if student.coach_id]
-        print(coaches_ids)
-        query = select(models.Coach.id, models.User.uuid).join(models.Coach).where(models.User.id.in_(coaches_ids))
+        query = select(models.Coach.id, models.User.uuid).join(models.Coach).where(models.Coach.id.in_(coaches_ids))
         cursor = await self.session.execute(query)
         coaches_uuids = {coach_id: user_id for coach_id, user_id in cursor.scalar()}
         return ListStudentEntity(
