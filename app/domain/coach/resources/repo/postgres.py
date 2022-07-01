@@ -90,7 +90,7 @@ class PostgresCoachRepo(CoachRepo):
         query = query.where(models.User.has_access == has_access)
         query = query.limit(self.limit).offset(page * self.limit)
         cursor = await self.session.execute(query)
-        coaches = [coach for coach in cursor.all()]
+        coaches = [coach[0] for coach in cursor.all()]
         students = {}
         students_query = select(models.User.uuid).join(models.Student)
         for coach in coaches:
