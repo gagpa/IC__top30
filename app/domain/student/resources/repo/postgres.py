@@ -51,7 +51,7 @@ class PostgresStudentRepo(StudentRepo):
             student_from_db: typing.Optional[models.Student] = cursor.one()
             student_from_db = student_from_db[0]
             if student_from_db.coach_id:
-                query = select(models.User.uuid).where(models.User.id == student_from_db.coach_id)
+                query = select(models.User.uuid).join(models.Coach).where(models.Coach.id == student_from_db.coach_id)
                 cursor = await self.session.execute(query)
                 coach_id = cursor.one()[0]
             else:
