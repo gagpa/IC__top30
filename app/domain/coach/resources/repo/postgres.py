@@ -57,7 +57,9 @@ class PostgresCoachRepo(CoachRepo):
         query = select(models.Coach).join(models.User).where(models.User.uuid == user_id)
         cursor = await self.session.execute(query)
         try:
+            print(1)
             coach_from_db: typing.Optional[models.Coach] = cursor.one()
+            print(2)
             coach_from_db = coach_from_db[0]
         except NoResultFound:
             raise errors.EntityNotFounded()
