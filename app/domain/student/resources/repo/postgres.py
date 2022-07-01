@@ -81,9 +81,9 @@ class PostgresStudentRepo(StudentRepo):
         cursor = await self.session.execute(query)
         students = cursor.scalars()
         coaches_ids = [student.coach_id for student in students if student.coach_id]
+        print(coaches_ids)
         query = select(models.Coach.id, models.User.uuid).join(models.Coach).where(models.User.id.in_(coaches_ids))
         cursor = await self.session.execute(query)
-        print(cursor.scalar())
         coaches_uuids = {coach_id: user_id for coach_id, user_id in cursor.scalar()}
         return ListStudentEntity(
             total=1,
