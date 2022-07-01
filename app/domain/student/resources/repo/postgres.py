@@ -84,6 +84,8 @@ class PostgresStudentRepo(StudentRepo):
         query = select(models.Coach.id, models.User.uuid).join(models.Coach).where(models.Coach.id.in_(coaches_ids))
         cursor = await self.session.execute(query)
         coaches_uuids = {coach_id: user_id for coach_id, user_id in cursor.all()}
+        print(coaches_uuids)
+        print(students)
         return ListStudentEntity(
             total=1,
             max_page=1,
