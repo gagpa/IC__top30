@@ -75,7 +75,7 @@ class PostgresStudentRepo(StudentRepo):
     ) -> ListStudentEntity:
         query = select(models.Student).join(models.User).options(joinedload(models.Student.user_data))
         if coach_id:
-            subquery = select(models.Coach.uuid).join(models.User).where(models.User.uuid == coach_id).subquery()
+            subquery = select(models.Coach.id).join(models.User).where(models.User.uuid == coach_id).subquery()
             query = query.where(models.Student.coach_id == subquery)
         query = query.where(models.User.has_access == has_access)
         query = query.limit(self.limit).offset(page * self.limit)
