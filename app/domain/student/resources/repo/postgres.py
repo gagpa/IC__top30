@@ -74,8 +74,9 @@ class PostgresStudentRepo(StudentRepo):
             page: int = 0,
     ) -> ListStudentEntity:
         query = select(models.Student).join(models.User).options(joinedload(models.Student.user_data))
-        if coach_id:  # TODO: Добавить фильтр
-            query = query
+        if coach_id:
+            subquery = select(models.Coach.uuid).join(models.User).where(models.User.uuid == coach_id).subquery()
+            query = query.where(models.Student.coach_id == subquery)
         query = query.where(models.User.has_access == has_access)
         query = query.limit(self.limit).offset(page * self.limit)
         cursor = await self.session.execute(query)
@@ -84,6 +85,7 @@ class PostgresStudentRepo(StudentRepo):
         query = select(models.Coach.id, models.User.uuid).join(models.Coach).where(models.Coach.id.in_(coaches_ids))
         cursor = await self.session.execute(query)
         coaches_uuids = {coach_id: user_id for coach_id, user_id in cursor.all()}
+        print([student.id for student in students])
         return ListStudentEntity(
             total=1,
             max_page=1,

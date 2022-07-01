@@ -14,4 +14,4 @@ class FilterStudentsFromRepo(FilterStudents):
 
     async def filter(self, coach_id: typing.Optional[UUID] = None, page: int = 0) -> ListStudentEntity:
         """Отфильтровать"""
-        return await self.student_repo.filter(page=page)
+        return await self.student_repo.filter(coach_id=coach_id, page=page)

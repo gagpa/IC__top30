@@ -59,7 +59,6 @@ async def _filter(
         find_user_case: domain.user.use_cases.find.FindUserInRepo = Depends(dependencies.get_find_user_in_repo),
 ):
     students = await filter_students_case.filter(coach_id=coach_id, page=page)
-    print(students)
     users = [await find_user_case.find(student.user_id) for student in students.items]
     return responses.ListstudentsResponse(
         data=responses.UserStudentList(
