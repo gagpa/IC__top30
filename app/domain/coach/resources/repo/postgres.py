@@ -54,16 +54,15 @@ class PostgresCoachRepo(CoachRepo):
         )
 
     async def find(self, user_id: UUID) -> CoachEntity:
-        query = select(models.Coach).join(models.User).where(models.User.uuid == user_id). \
-            options(joinedload(models.Coach.students))
+        query = select(models.Coach).join(models.User).where(models.User.uuid == user_id)
         cursor = await self.session.execute(query)
         try:
             coach_from_db: typing.Optional[models.Coach] = cursor.one()
             coach_from_db = coach_from_db[0]
-            students_query = select(models.User.uuid).join(models.Student)
-            cursor = await self.session.execute(students_query.where(models.Student.coach_id == coach_from_db.id))
         except NoResultFound:
             raise errors.EntityNotFounded()
+        students_query = select(models.User.uuid).join(models.Student)
+        cursor = await self.session.execute(students_query.where(models.Student.coach_id == coach_from_db.id))
         return CoachEntity(
             user_id=user_id,
             profession_direction=coach_from_db.profession_direction,
