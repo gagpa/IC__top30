@@ -80,7 +80,7 @@ class PostgresStudentRepo(StudentRepo):
         query = query.limit(self.limit).offset(page * self.limit)
         cursor = await self.session.execute(query)
         students = cursor.scalars()
-        coaches_ids = [student.coach_id for student in students if student.coach]
+        coaches_ids = [student.coach_id for student in students if student.coach_id]
         query = select(models.Coach.id, models.User.uuid).join(models.Coach).where(models.User.id.in_(coaches_ids))
         cursor = await self.session.execute(query)
         coaches_uuids = {coach_id: user_id for coach_id, user_id in cursor.scalar()}
