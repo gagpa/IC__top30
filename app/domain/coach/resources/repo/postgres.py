@@ -90,6 +90,12 @@ class PostgresCoachRepo(CoachRepo):
         query = query.where(models.User.has_access == has_access)
         query = query.limit(self.limit).offset(page * self.limit)
         cursor = await self.session.execute(query)
+        coaches = [coach for coach in cursor.all()]
+        students = {}
+        students_query = select(models.User.uuid).join(models.Student)
+        for coach in coaches:
+            cursor = await self.session.execute(students_query.where(models.Student.coach_id == coach.id))
+            students[coach.id] = [student_id[0] for student_id in cursor.all()]
         return ListCoachEntity(
             total=1,
             max_page=1,
@@ -101,8 +107,8 @@ class PostgresCoachRepo(CoachRepo):
                     experience=coach_from_db.experience,
                     profession_competencies=coach_from_db.profession_competencies,
                     total_seats=coach_from_db.total_seats,
-                    students=[student.user_data.uuid for student in coach_from_db.students],
+                    students=students.get(coach_from_db.id, []),
                 )
-                for coach_from_db in cursor.scalars()
+                for coach_from_db in coaches
             ]
         )
