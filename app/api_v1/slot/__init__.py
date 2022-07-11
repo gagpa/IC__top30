@@ -7,6 +7,7 @@ from fastapi.responses import Response
 
 import domain
 from api_v1.base.client_requests import Client
+from domain.auth.entity import Role
 from api_v1.base.dependencies import get__client
 from . import (
     client_requests,
@@ -52,14 +53,15 @@ async def _filter(
     '/{_id}',
     status_code=status.HTTP_204_NO_CONTENT,
     response_class=Response,
-    dependencies=[Depends(dependencies.only__coach_student)],
+    dependencies=[Depends(dependencies.only__coach)],
 )
 async def _delete(
         _id: UUID,
+        client: Client = Depends(get__client),
         dates: typing.List[int] = Query(...),
         delete_slot__case: domain.slot.use_cases.delete.DeleteSlotFromRepo = Depends(dependencies.get__delete_slot),
 ):
-    await delete_slot__case.delete(dates=[datetime.fromtimestamp(date) for date in dates])
+    await delete_slot__case.delete(coach_id=client.user_id, dates=[datetime.fromtimestamp(date) for date in dates])
 
 
 @router.post(
