@@ -22,7 +22,7 @@ router = APIRouter(
 @router.get(
     '/{id}',
     response_model=responses.CoachByIDResponse,
-    dependencies=[Depends(dependencies.only__student)],
+    dependencies=[Depends(dependencies.only__admin_student)],
 )
 async def _find(
         id: uuid.UUID,
@@ -116,3 +116,18 @@ async def _delete(
 ):
     await delete_coach_case.delete(user_id=_id)
     await delete_user_case.delete(id=_id)
+
+
+@router.put(
+    '/{_id}',
+    status_code=status.HTTP_204_NO_CONTENT,
+    response_class=Response,
+    dependencies=[Depends(dependencies.only__student)]
+)
+async def _choose_coach(
+        _id: uuid.UUID,
+        client: Client = Depends(dependencies.get__client),
+        choose_free_coach_case: domain.student.use_cases.choose_coach.ChooseCoachFree =
+        Depends(dependencies.get__choose_free_coach),
+):
+    await choose_free_coach_case.choose(student_id=client.user_id, coach_id=_id)

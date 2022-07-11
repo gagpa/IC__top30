@@ -1,4 +1,5 @@
 import os
+import typing
 from enum import Enum
 
 from pydantic import BaseSettings
@@ -20,6 +21,7 @@ class AsyncPostgresSettings(BaseSettings):
 
 class AppSettings(BaseSettings):
     SECRET_KEY: str = 'SECRET'
+    LESSONS: typing.List[int] = [1, 1, 2, 2, 2, 2, 1]
 
 
 class AppMode(Enum):

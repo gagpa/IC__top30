@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api_v1.base.client_requests import Client
 from api_v1.base.dependencies import get__session, get__client
-from domain import coach, user, auth
+from domain import coach, user, auth, student
 
 
 async def get_find_coach_in_repo(session: AsyncSession = fastapi.Depends(get__session)):
@@ -54,3 +54,12 @@ async def only__admin_student(client: Client = fastapi.Depends(get__client)):
 async def get__accept_coach_in_repo(session: AsyncSession = fastapi.Depends(get__session)):
     coach_updater = coach.resources.updater.PostgresCoachUpdater(session=session)
     return coach.use_cases.accept.AcceptCoachInRepo(coach_updater=coach_updater)
+
+
+async def get__choose_free_coach(session: AsyncSession = fastapi.Depends(get__session)):
+    student_service = student.resources.service.PostgresStudentService(session=session)
+    coach_verifier = student.resources.coach_verifier.PostrgesCoachVerifier(session=session)
+    return student.use_cases.choose_coach.ChooseCoachFree(
+        coach_verifier=coach_verifier,
+        student_service=student_service,
+    )

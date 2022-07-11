@@ -6,6 +6,7 @@ from .coach import router as coach_router
 from .registration import router as registration
 from .request import router as requests_router
 from .self import router as self_router
+from .slot import router as slot_router
 from .student import router as student_router
 from .user import router as user_router
 
@@ -16,6 +17,7 @@ def add_routers(app: FastAPI):
     app.include_router(auth_router)
     app.include_router(student_router)
     app.include_router(self_router)
+    app.include_router(slot_router)
     app.include_router(requests_router)
     app.include_router(registration)
     app.include_router(user_router)

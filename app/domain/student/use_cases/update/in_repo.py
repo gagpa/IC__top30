@@ -3,14 +3,16 @@ from uuid import UUID
 
 import pydantic
 
+from domain.student.resources.repo import StudentRepo
 from domain.student.resources.updater import StudentUpdater
 from .base import UpdateStudent
 
 
 class UpdateStudentInRepo(UpdateStudent):
 
-    def __init__(self, student_updater: StudentUpdater):
+    def __init__(self, student_updater: StudentUpdater, student_repo: StudentRepo):
         self.student_updater = student_updater
+        self.student_repo = student_repo
 
     async def update(
             self,
@@ -27,6 +29,7 @@ class UpdateStudentInRepo(UpdateStudent):
             supervisor: typing.Optional[str] = None,
             coach_id: typing.Optional[UUID] = None,
     ):
+        student = await self.student_repo.find(user_id=student_id)
         await self.student_updater.update(
             student_id=student_id,
             has_access=has_access,
