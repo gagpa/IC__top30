@@ -73,16 +73,16 @@ class PostrgesSlotRepo(SlotRepo):
             query = query.where(models.Slot.start_date == start_date)
         if end_date:
             query = query.where(models.Slot.end_date == end_date)
-        if coach_id:
-            subquery_coach_id = sql.select(models.Coach.id).where(models.User.uuid == coach_id).subquery()
-            query = query.where(models.Slot.coach_id == subquery_coach_id)
-        if student_id:
-            subquery_coach_id_of_student = sql.select(models.Coach.id). \
-                join(models.Student, models.Student.coach_id == models.Coach.id). \
-                join(models.User, models.Student.user_id == models.User.id). \
-                where(models.User.uuid == student_id). \
-                subquery()
-            query = query.where(models.Slot.coach_id == subquery_coach_id_of_student)
+        # if coach_id:
+        #     subquery_coach_id = sql.select(models.Coach.id).where(models.User.uuid == coach_id).subquery()
+        #     query = query.where(models.Slot.coach_id == subquery_coach_id)
+        # if student_id:
+        #     subquery_coach_id_of_student = sql.select(models.Coach.id). \
+        #         join(models.Student, models.Student.coach_id == models.Coach.id). \
+        #         join(models.User, models.Student.user_id == models.User.id). \
+        #         where(models.User.uuid == student_id). \
+        #         subquery()
+        #     query = query.where(models.Slot.coach_id == subquery_coach_id_of_student)
         if is_free:
             query = query
         cursor = await self.session.execute(query)
