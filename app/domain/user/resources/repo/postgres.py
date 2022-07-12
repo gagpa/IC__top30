@@ -31,6 +31,7 @@ class PostgresUserRepo(UserRepo):
         cursor = await self.session.execute(query)
         if cursor.one_or_none():
             raise errors.EntityAlreadyExist()
+        print(password, first_name, last_name, patronymic, phone, email, photo)
         new_user = models.User(
             password=password,
             first_name=first_name,
