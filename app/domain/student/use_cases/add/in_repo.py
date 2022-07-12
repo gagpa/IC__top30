@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from domain.student.entity import StudentEntity
-from domain.student.resources.repo import StudentRepo
+from domain.student.resources.student_repo import StudentRepo
 from .base import AddStudent
 
 __all__ = ['AddStudentInRepo']
