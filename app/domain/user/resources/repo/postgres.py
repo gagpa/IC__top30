@@ -38,7 +38,7 @@ class PostgresUserRepo(UserRepo):
             patronymic=patronymic,
             phone=phone,
             email=email,
-            photo=None,
+            photo=None,  # TODO: Фото фикс
         )
         self.session.add(new_user)
         await self.session.flush()
@@ -49,7 +49,7 @@ class PostgresUserRepo(UserRepo):
             patronymic=new_user.patronymic,
             phone=new_user.phone,
             email=pydantic.EmailStr(new_user.email),
-            photo=new_user.photo,
+            photo=None,  # TODO: Фото фикс
             has_access=new_user.has_access,
         )
 
@@ -66,7 +66,7 @@ class PostgresUserRepo(UserRepo):
             patronymic=user_from_db.patronymic,
             phone=user_from_db.phone,
             email=pydantic.EmailStr(user_from_db.email),
-            photo=user_from_db.photo,
+            photo=None,  # TODO: Фото фикс
             has_access=user_from_db.has_access,
         )
 
@@ -85,7 +85,7 @@ class PostgresUserRepo(UserRepo):
                     patronymic=user_from_db.patronymic,
                     phone=user_from_db.phone,
                     email=pydantic.EmailStr(user_from_db.email),
-                    photo=user_from_db.photo,
+                    photo=None,  # TODO: Фото фикс
                     has_access=user_from_db.has_access,
                 )
                 for user_from_db in cursor.scalars()
