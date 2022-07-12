@@ -43,13 +43,12 @@ async def _filter(
 
 
 @router.delete(
-    '/{_id}',
+    '',
     status_code=status.HTTP_204_NO_CONTENT,
     response_class=Response,
     dependencies=[Depends(dependencies.only__coach)],
 )
 async def _delete(
-        _id: UUID,
         client: Client = Depends(get__client),
         dates: typing.List[int] = Query(...),
         delete_slot__case: domain.slot.use_cases.delete.DeleteSlotFromRepo = Depends(dependencies.get__delete_slot),
@@ -64,10 +63,10 @@ async def _delete(
 )
 async def _add(
         client: Client = Depends(get__client),
-        dates: typing.List[int] = Query(...),
+        dates: str = Query(...),
         add_slots__case: domain.slot.use_cases.add.AddSlotInRepo = Depends(dependencies.get__add_slots),
 ):
     delta_hour = timedelta(hours=1)
-    for date in dates:
-        start_date = datetime.fromtimestamp(date)
+    for date in dates.removeprefix('[').removesuffix(']').split(','):
+        start_date = datetime.fromtimestamp(int(date))
         await add_slots__case.add(coach_id=client.user_id, start_date=start_date, end_date=start_date + delta_hour)
