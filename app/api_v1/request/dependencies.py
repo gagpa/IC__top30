@@ -27,7 +27,7 @@ async def get__filter_requests_coaches(session: AsyncSession = fastapi.Depends(g
 
 
 async def get__filter_requests_students(session: AsyncSession = fastapi.Depends(get__session)):
-    student_repo = student.resources.repo.PostgresStudentRepo(session=session)
+    student_repo = student.resources.student_repo.PostgresStudentRepo(session=session)
     return student.use_cases.filter.FilterRegistrationRequestsStudents(student_repo=student_repo)
 
 
