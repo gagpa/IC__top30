@@ -130,7 +130,7 @@ async def _update(
 
 
 @router.patch(
-    '/personal_coach/{id}',
+    '/personal_coach/{_id}',
     status_code=status.HTTP_204_NO_CONTENT,
     response_class=Response,
     dependencies=[Depends(dependencies.only__student)],
@@ -146,7 +146,7 @@ async def _accept_personal_coach(
 
 
 @router.delete(
-    '/personal_coach/{id}',
+    '/personal_coach/{_id}',
     status_code=status.HTTP_204_NO_CONTENT,
     response_class=Response,
     dependencies=[Depends(dependencies.only__student)],
