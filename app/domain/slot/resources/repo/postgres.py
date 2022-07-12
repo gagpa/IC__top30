@@ -86,6 +86,7 @@ class PostrgesSlotRepo(SlotRepo):
         if is_free:
             query = query
         cursor = await self.session.execute(query)
+        print([slot_from_db for slot_from_db in cursor.all()])
         return ListSlotEntity(
             max_page=1,
             total=1,
