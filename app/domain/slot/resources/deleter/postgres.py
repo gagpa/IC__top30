@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import UUID
 
 import sqlalchemy as sql
@@ -12,6 +13,10 @@ class PostgresSlotDeleter(SlotDeleter):
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def delete(self, slot_id: UUID):
-        query = sql.delete(models.Slot).where(models.Slot.uuid == slot_id)
+    async def delete(self, coach_id: UUID, slot_date: datetime):
+        subquery_coach_id = sql.select(models.Coach.id).join(models.User).where(models.User.uuid == coach_id)
+        query = sql.delete(models.Slot).where(
+            models.Slot.coach_id == subquery_coach_id,
+            models.Slot.start_date == slot_date,
+        )
         await self.session.execute(query)
