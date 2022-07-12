@@ -21,15 +21,15 @@ class PostgresPersonalCoachChanger(PersonalCoachChanger):
         subquery_new_coach = sql.select(models.Coach.id).join(models.User).where(
             models.User.uuid == new_coach).subquery()
         cursor = await self.session.execute(
-            query.values(coach_id=subquery_new_coach).returning(models.Student),
+            query.values(coach_id=subquery_new_coach),
             execution_options=immutabledict({'synchronize_session': 'fetch'}),
         )
-        student_from_db = cursor.one()[0]
-        return StudentEntity(
-            user_id=student,
-            position=student_from_db.position,
-            organization=student_from_db.organization,
-            experience=student_from_db.experience,
-            supervisor=student_from_db.supervisor,
-            coach_id=new_coach,
-        )
+        # student_from_db = cursor.one()[0]
+        # return StudentEntity(
+        #     user_id=student,
+        #     position=student_from_db.position,
+        #     organization=student_from_db.organization,
+        #     experience=student_from_db.experience,
+        #     supervisor=student_from_db.supervisor,
+        #     coach_id=new_coach,
+        # )
