@@ -33,14 +33,14 @@ class PostrgesSlotRepo(SlotRepo):
             end_date=end_date,
         )
         cursor = await self.session.execute(insert_query)
-        await self.session.flush()
-        slot_from_db: models.Slot = cursor.scalar()
-        return SlotEntity(
-            id=slot_from_db.uuid,
-            start_date=slot_from_db.start_date,
-            end_date=slot_from_db.end_date,
-            coach_id=coach_id,
-        )
+        # await self.session.flush()
+        # slot_from_db: models.Slot = cursor.scalar()
+        # return SlotEntity(
+        #     id=slot_from_db.uuid,
+        #     start_date=slot_from_db.start_date,
+        #     end_date=slot_from_db.end_date,
+        #     coach_id=coach_id,
+        # )
 
     async def find(self, slot_id: UUID) -> SlotEntity:
         query = sql.select(models.Slot, models.User.uuid). \
