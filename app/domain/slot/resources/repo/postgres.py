@@ -33,6 +33,7 @@ class PostrgesSlotRepo(SlotRepo):
             end_date=end_date,
         )
         cursor = await self.session.execute(insert_query)
+        await self.session.flush()
         slot_from_db: models.Slot = cursor.scalar()
         return SlotEntity(
             id=slot_from_db.uuid,
