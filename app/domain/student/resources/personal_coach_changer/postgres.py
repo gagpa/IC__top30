@@ -16,11 +16,12 @@ class PostgresPersonalCoachChanger(PersonalCoachChanger):
         self.session = session
 
     async def change(self, student: UUID, new_coach: typing.Optional[UUID]) -> StudentEntity:
-        query = sql.update(models.Student).join(models.User).where(models.User.uuid == student)
-        new_coach = sql.select(models.Coach.id).join(models.User).where(
+        subquery_user = sql.select(models.User.id).where(models.User.uuid == student).subquery()
+        query = sql.update(models.Student).where(models.Student.user_id == subquery_user)
+        subquery_new_coach = sql.select(models.Coach.id).join(models.User).where(
             models.User.uuid == new_coach).subquery()
         cursor = await self.session.execute(
-            query.values(coach_id=new_coach).returning(models.Student),
+            query.values(coach_id=subquery_new_coach).returning(models.Student),
             execution_options=immutabledict({'synchronize_session': 'fetch'}),
         )
         student_from_db = cursor.one()[0]
