@@ -37,7 +37,7 @@ async def _filter(
         data=responses.SlotList(
             max_page=slots.max_page,
             total=slots.total,
-            items=[int(round(slot.start_date.timestamp())) for slot in slots.items],
+            items=[int(round(slot.start_date.timestamp())) * 1000 for slot in slots.items],
         )
     )
 
@@ -68,5 +68,5 @@ async def _add(
 ):
     delta_hour = timedelta(hours=1)
     for date in dates.removeprefix('[').removesuffix(']').split(','):
-        start_date = datetime.fromtimestamp(int(date))
+        start_date = datetime.fromtimestamp(int(date) / 1000)
         await add_slots__case.add(coach_id=client.user_id, start_date=start_date, end_date=start_date + delta_hour)
