@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Response, status
-
+from uuid import UUID
 import domain
 from api_v1.base.client_requests import Client
 from api_v1.base.dependencies import get__client
@@ -127,3 +127,35 @@ async def _update(
             phone=update_fields.phone,
             photo=update_fields.photo,
         )
+
+
+@router.patch(
+    '/personal_coach/{id}',
+    status_code=status.HTTP_204_NO_CONTENT,
+    response_class=Response,
+    dependencies=[Depends(dependencies.only__student)],
+    summary='Выбрать коуча',
+)
+async def _accept_personal_coach(
+        _id: UUID,
+        client: Client = Depends(dependencies.get__client),
+        choose_free_coach__case: domain.student.use_cases.choose_coach.ChooseCoachFree =
+        Depends(dependencies.get__choose_free_coach),
+):
+    await choose_free_coach__case.choose(student_id=client.user_id, coach_id=_id)
+
+
+@router.delete(
+    '/personal_coach/{id}',
+    status_code=status.HTTP_204_NO_CONTENT,
+    response_class=Response,
+    dependencies=[Depends(dependencies.only__student)],
+    summary='Отказаться от коуча',
+)
+async def _decline_personal_coach(
+        _id: UUID,
+        client: Client = Depends(dependencies.get__client),
+        refuse_a_coach__case: domain.student.use_cases.refuse_personal_coach.SoftRefusePersonalCoach =
+        Depends(dependencies.get__refuse_a_personal_coach),
+):
+    await refuse_a_coach__case.refuse(student_id=client.user_id)

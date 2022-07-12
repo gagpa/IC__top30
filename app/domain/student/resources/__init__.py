@@ -1,7 +1,8 @@
 from . import (
     coach_verifier,
     deleter,
-    repo,
+    personal_coach_changer,
+    student_repo,
     service,
     updater,
 )

@@ -5,5 +5,6 @@ from . import (
     choose_coach,
     filter,
     find,
+refuse_personal_coach,
     update,
 )
