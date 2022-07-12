@@ -40,8 +40,8 @@ async def _filter(
             items=[
                 responses.Slot(
                     id=slot.id,
-                    start_date=slot.start_date,
-                    end_date=slot.end_date,
+                    start_date=int(round(slot.start_date.timestamp())),
+                    end_date=int(round(slot.end_date.timestamp())),
                 )
                 for slot in slots.items
             ],
