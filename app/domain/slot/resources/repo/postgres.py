@@ -67,7 +67,7 @@ class PostrgesSlotRepo(SlotRepo):
             is_free: typing.Optional[bool],
             page: int = 0,
     ) -> ListSlotEntity:
-        query = sql.select(models.Slot, models.User.uuid).join(models.Coach). \
+        query = sql.select(models.Slot, models.User.uuid).join(models.Coach, models.Slot.coach_id == models.Coach.id). \
             join(models.User, models.User.id == models.Coach.user_id)
         if start_date:
             query = query.where(models.Slot.start_date == start_date)
