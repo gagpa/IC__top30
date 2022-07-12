@@ -51,9 +51,9 @@ async def get__refuse_a_personal_coach(session: AsyncSession = fastapi.Depends(g
 
 
 async def get__choose_free_coach(session: AsyncSession = fastapi.Depends(get__session)):
-    student_service = student.resources.service.PostgresStudentService(session=session)
+    personal_coach_changer = student.resources.personal_coach_changer.PostgresPersonalCoachChanger(session=session)
     coach_verifier = student.resources.coach_verifier.PostrgesCoachVerifier(session=session)
     return student.use_cases.choose_coach.ChooseCoachFree(
-        student_service=student_service,
+        personal_coach_changer=personal_coach_changer,
         coach_verifier=coach_verifier,
     )
