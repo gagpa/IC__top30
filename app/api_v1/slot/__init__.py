@@ -58,7 +58,7 @@ async def _delete(
 
 @router.post(
     '',
-    status_code=status.HTTP_201_CREATED,
+    status_code=status.HTTP_204_NO_CONTENT,
     dependencies=[Depends(dependencies.only__coach)]
 )
 async def _add(
