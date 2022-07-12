@@ -7,7 +7,7 @@ from domain import student, user, auth
 
 
 async def get_find_student_in_repo(session: AsyncSession = fastapi.Depends(get__session)):
-    student_repo = student.resources.repo.PostgresStudentRepo(session)
+    student_repo = student.resources.student_repo.PostgresStudentRepo(session)
     return student.use_cases.find.FindStudentInRepo(student_repo=student_repo)
 
 
@@ -17,7 +17,7 @@ async def get_find_user_in_repo(session: AsyncSession = fastapi.Depends(get__ses
 
 
 async def get_filter_students_from_repo(limit: int = 20, session: AsyncSession = fastapi.Depends(get__session)):
-    student_repo = student.resources.repo.PostgresStudentRepo(session, limit=limit)
+    student_repo = student.resources.student_repo.PostgresStudentRepo(session, limit=limit)
     return student.use_cases.filter.FilterStudentsFromRepo(student_repo=student_repo)
 
 
