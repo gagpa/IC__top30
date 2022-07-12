@@ -14,7 +14,7 @@ class PostrgesCoachVerifier(CoachVerifier):
         self.session = session
 
     async def is_free(self, coach_id: UUID):
-        subquery_count_of_students = sql.select(sql.func.count(models.Student)).where(coach_id=coach_id).subquery()
+        subquery_count_of_students = sql.select(sql.func.count(models.Student.id)).where(coach_id=coach_id).subquery()
         query = sql.select(models.Coach).where(
             coach_id == coach_id,
             models.Coach.total_seats > subquery_count_of_students,
