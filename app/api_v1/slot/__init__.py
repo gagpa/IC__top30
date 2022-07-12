@@ -37,14 +37,7 @@ async def _filter(
         data=responses.SlotList(
             max_page=slots.max_page,
             total=slots.total,
-            items=[
-                responses.Slot(
-                    id=slot.id,
-                    start_date=int(round(slot.start_date.timestamp())),
-                    end_date=int(round(slot.end_date.timestamp())),
-                )
-                for slot in slots.items
-            ],
+            items=[int(round(slot.start_date.timestamp())) for slot in slots.items],
         )
     )
 

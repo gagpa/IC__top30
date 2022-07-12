@@ -10,7 +10,7 @@ class Slot(ResponseBody):
     end_date: int
 
 
-SlotList = PaginatedList[Slot]
+SlotList = PaginatedList[int]
 
 
 class FilterSlotResponse(ResponseBody):
