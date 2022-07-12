@@ -3,7 +3,7 @@ from uuid import UUID
 
 import pydantic
 
-from domain.student.resources.repo import StudentRepo
+from domain.student.resources.student_repo import StudentRepo
 from domain.student.resources.updater import StudentUpdater
 from .base import UpdateStudent
 

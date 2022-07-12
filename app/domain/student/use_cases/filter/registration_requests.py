@@ -2,7 +2,7 @@ import typing
 from uuid import UUID
 
 from domain.student.entity import ListStudentEntity
-from domain.student.resources.repo import StudentRepo
+from domain.student.resources.student_repo import StudentRepo
 from .base import FilterStudents
 
 
