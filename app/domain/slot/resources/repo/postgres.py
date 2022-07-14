@@ -73,9 +73,11 @@ class PostrgesSlotRepo(SlotRepo):
         if end_date:
             query = query.where(models.Slot.end_date == end_date)
         if coach_id:
-            query_coach_id = sql.select(models.Coach.id).where(models.User.uuid == coach_id)
+            query_coach_id = sql.select(models.Coach.id).join(models.User).where(models.User.uuid == coach_id)
             cursor = await self.session.execute(query_coach_id)
-            query = query.where(models.Slot.coach_id == cursor.scalar())
+            inner_coach_id = cursor.scalar()
+            print(inner_coach_id)
+            query = query.where(models.Slot.coach_id == inner_coach_id)
         if student_id:
             subquery_coach_id_of_student = sql.select(models.Coach.id). \
                 join(models.Student, models.Student.coach_id == models.Coach.id). \
