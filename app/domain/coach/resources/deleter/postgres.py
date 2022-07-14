@@ -16,4 +16,4 @@ class PostgresCoachDeleter(CoachDeleter):
     async def delete(self, user_id: UUID):
         subquery = select(models.User.id).where(models.User.uuid == user_id).subquery()
         query = delete(models.Coach).where(models.Coach.user_id.in_(subquery))
-        await self.session.execute(query, execution_options=immutabledict({"synchronize_session": 'fetch'}))
+        await self.session.execute(query, execution_options=immutabledict({'synchronize_session': 'fetch'}))
