@@ -70,18 +70,8 @@ async def _add(
         client: Client = Depends(get__client),
         dates: str = Query(...),
         add_slots__case: domain.slot.use_cases.add.AddSlotInRepo = Depends(dependencies.get__add_slots),
-        delete_slot__case: domain.slot.use_cases.delete.DeleteSlotFromRepo = Depends(dependencies.get__delete_slot),
-        filter_slots__case: typing.Union[
-            domain.slot.use_cases.filter_slots.FilterSlotsForCoach,
-            domain.slot.use_cases.filter_slots.FilterSlotsForStudent,
-        ] = Depends(dependencies.get__filter_slots),
 ):
     delta_hour = timedelta(hours=1)
-    slots = await filter_slots__case.filter(client.user_id)
-    await delete_slot__case.delete(
-        coach_id=client.user_id,
-        dates=[slot.start_date for slot in slots.items],
-    )
     for date in dates.removeprefix('[').removesuffix(']').split(','):
         start_date = datetime.fromtimestamp(int(date) / 1000)
         await add_slots__case.add(coach_id=client.user_id, start_date=start_date, end_date=start_date + delta_hour)
