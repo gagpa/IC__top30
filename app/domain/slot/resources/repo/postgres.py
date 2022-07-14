@@ -25,7 +25,7 @@ class PostrgesSlotRepo(SlotRepo):
         )
         cursor = await self.session.execute(check_query)
         if not cursor.one_or_none():
-            print('Not added')
+            print(f'Not added {start_date} - {end_date}')
             return
         insert_query = sql.insert(models.Slot).values(
             coach_id=subquery_coach_id,
