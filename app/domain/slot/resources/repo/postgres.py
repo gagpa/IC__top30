@@ -21,10 +21,10 @@ class PostrgesSlotRepo(SlotRepo):
         subquery_coach_id = sql.select(models.Coach.id).join(models.User).where(models.User.uuid == coach_id).subquery()
         check_query = sql.select(models.Slot).where(  # TODO: Поменять запрос на пересечение дат
             models.Slot.coach_id == subquery_coach_id,
-        ).where(models.Slot.start_date == start_date)
+            models.Slot.start_date == start_date,
+        )
         cursor = await self.session.execute(check_query)
-        if not cursor.one_or_none():
-            print(f'Not added {start_date} - {end_date}')
+        if cursor.one_or_none():
             return
         insert_query = sql.insert(models.Slot).values(
             coach_id=subquery_coach_id,
