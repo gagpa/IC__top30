@@ -18,5 +18,5 @@ async def get__add_coach(session: AsyncSession = Depends(get__session)):
 
 async def get__add_student(session: AsyncSession = Depends(get__session)):
     return student.use_cases.add.AddStudentInRepo(
-        student_repo=student.resources.repo.PostgresStudentRepo(session=session),
+        student_repo=student.resources.student_repo.PostgresStudentRepo(session=session),
     )
