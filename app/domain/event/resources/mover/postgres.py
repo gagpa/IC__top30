@@ -45,5 +45,7 @@ class PostgresEventMover(EventMover):
         )
         event_slot_links = cursor.all()
         for link, new_slot in zip(event_slot_links, new_slots_for_event):
+            print(link)
+            print(new_slot)
             link[0].c.slot_id = new_slot.id
             self.session.add(link[0])
