@@ -6,6 +6,7 @@ import sqlalchemy as sql
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload, aliased
+
 import errors
 from db.postgres import models
 from domain.event.entity import EventEntity, EventStatus, ListEventEntity
@@ -39,6 +40,19 @@ class PostgresEventRepo(EventRepo):
         slots = [slot[0] for slot in cursor.all()]
         new_event = models.Event(slots=slots, student_id=subquery__student_id, status=EventStatus.active)
         self.session.add(new_event)
+        coach_query = sql.select(models.User.uuid). \
+            join(models.Coach, models.Coach.user_id == models.User.id). \
+            join(models.Student, models.Student.coach_id == models.Coach.id).\
+            where(models.Student.id == new_event.student_id)
+        cursor = await self.session.execute(coach_query)
+        return EventEntity(
+            id=new_event.uuid,
+            student=student_id,
+            coach=cursor.scalar(),
+            start_date=start_date,
+            end_date=end_date,
+            status=EventStatus.active,
+        )
 
     async def find(self, event_id: UUID) -> EventEntity:
         coach_user__alias = aliased(models.User)

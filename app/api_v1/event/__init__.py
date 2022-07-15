@@ -74,13 +74,36 @@ async def _filter(
 async def _add(
         new_event: client_requests.NewEventRequest,
         client: Client = Depends(get__client),
-        add_event__case: domain.event.use_cases.add.AddEventAsStudent = Depends(dependencies.get__add_event_case)
+        add_event__case: domain.event.use_cases.add.AddEventAsStudent = Depends(dependencies.get__add_event_case),
+        find_user__case: domain.user.use_cases.find.FindUserInRepo = Depends(dependencies.get__find_user_in_repo),
 ):
-    await add_event__case.add(
+    event = await add_event__case.add(
         start_date=datetime.fromtimestamp(int(new_event.start) / 1000),
         end_date=datetime.fromtimestamp(int(new_event.end) / 1000),
         student_id=client.user_id,
     )
+    coach = await find_user__case.find(event.coach)
+    student = await find_user__case.find(event.student)
+    return responses.FindEventResponse(
+        data=responses.Event(
+                id=event.id,
+                start=int(round(event.start_date.timestamp())) * 1000,
+                end=int(round(event.end_date.timestamp())) * 1000,
+                student=responses.Student(
+                    id=event.student,
+                    first_name=student.first_name,
+                    last_name=student.last_name,
+                    patronymic=student.patronymic,
+                ),
+                coach=responses.Coach(
+                    id=event.coach,
+                    first_name=coach.first_name,
+                    last_name=coach.last_name,
+                    patronymic=coach.patronymic,
+                ),
+            ),
+    )
+
 
 
 @router.put(
