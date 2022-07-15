@@ -21,8 +21,8 @@ class PostgresEventRepo(EventRepo):
         subquery__student_id = sql.select(models.Student.id).join(models.User).where(
             models.User.uuid == student_id).subquery()
         subquery__slots = sql.select(models.Slot.start_date).where(
-            models.Slot.start_date.beetween([start_date, end_date]),
-            models.Slot.end_date.beetween([start_date, end_date]),
+            models.Slot.start_date.between([start_date, end_date]),
+            models.Slot.end_date.between([start_date, end_date]),
         )
         check_exist_query = sql.select(models.Event).where(
             models.Event.student_id == subquery__student_id,
