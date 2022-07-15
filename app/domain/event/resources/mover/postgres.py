@@ -5,9 +5,10 @@ from uuid import UUID
 import sqlalchemy as sql
 from sqlalchemy.ext.asyncio import AsyncSession
 
+import errors
 from db.postgres import models
 from .base import EventMover
-import errors
+
 
 class PostgresEventMover(EventMover):
 
@@ -15,7 +16,10 @@ class PostgresEventMover(EventMover):
         self.session = session
 
     async def move(self, event_id: UUID, new_start_date: datetime):
-        query__slots = sql.select(models.Slot).join(models.Event).where(models.Event.uuid == event_id)
+        query__slots = sql.select(models.Slot). \
+            join(models.pivot__slots_events, models.pivot__slots_events.c.slot_id == models.Slot.id). \
+            join(models.Event, models.Event.id == models.pivot__slots_events.c.event_id). \
+            where(models.Event.uuid == event_id)
         cursor = await self.session.execute(query__slots)
         slots: typing.List[models.Slot] = cursor.all()[0]
         start = min([slot.start_date for slot in slots])
