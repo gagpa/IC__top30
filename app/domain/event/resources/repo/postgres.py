@@ -5,7 +5,7 @@ from uuid import UUID
 import sqlalchemy as sql
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import selectinload, aliased
 import errors
 from db.postgres import models
 from domain.event.entity import EventEntity, EventStatus, ListEventEntity
@@ -41,20 +41,26 @@ class PostgresEventRepo(EventRepo):
         self.session.add(new_event)
 
     async def find(self, event_id: UUID) -> EventEntity:
-        query = sql.select(models.Event, models.User.uuid). \
+        coach_user__alias = aliased(models.User)
+        student_user__alias = aliased(models.User)
+        query = sql.select(models.Event, student_user__alias.uuid, coach_user__alias.uuid). \
             join(models.Student, models.Event.student_id == models.Student.id). \
-            join(models.User, models.User.id == models.Student.user_id). \
-            where(models.Event.uuid == event_id)
+            join(student_user__alias, student_user__alias.id == models.Student.user_id). \
+            join(models.Coach, models.Coach.id == models.Student.coach_id). \
+            join(coach_user__alias, coach_user__alias.id == models.Coach.user_id). \
+            options(selectinload(models.Event.slots))
         cursor = await self.session.execute(query)
         try:
             data = cursor.one()
             event_from_db: models.Event = data[0]
             student_id: UUID = data[1]
+            coach_id: UUID = data[2]
         except NoResultFound:
             raise errors.EntityNotFounded
         return EventEntity(
             id=event_from_db.uuid,
             status=event_from_db.status,
+            coach=coach_id,
             student=student_id,
             start_date=min([slot.start_date for slot in event_from_db.slots]),
             end_date=max([slot.end_date for slot in event_from_db.slots]),
@@ -66,9 +72,13 @@ class PostgresEventRepo(EventRepo):
             student_id: typing.Optional[UUID],
             page: int = 0,
     ) -> ListEventEntity:
-        query = sql.select(models.Event, models.User.uuid). \
+        coach_user__alias = aliased(models.User)
+        student_user__alias = aliased(models.User)
+        query = sql.select(models.Event, student_user__alias.uuid, coach_user__alias.uuid). \
             join(models.Student, models.Event.student_id == models.Student.id). \
-            join(models.User, models.User.id == models.Student.user_id). \
+            join(student_user__alias, student_user__alias.id == models.Student.user_id). \
+            join(models.Coach, models.Coach.id == models.Student.coach_id). \
+            join(coach_user__alias, coach_user__alias.id == models.Coach.user_id). \
             options(selectinload(models.Event.slots))
         if coach_id:
             subquery_students_id_of_coach = sql.select(models.Student.id). \
@@ -88,6 +98,7 @@ class PostgresEventRepo(EventRepo):
                     id=data[0].uuid,
                     status=data[0].status,
                     student=data[1],
+                    coach=data[2],
                     start_date=min([slot.start_date for slot in data[0].slots]),
                     end_date=max([slot.end_date for slot in data[0].slots]),
                 )

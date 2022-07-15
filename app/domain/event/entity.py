@@ -14,6 +14,7 @@ class EventStatus(Enum):
 class EventEntity(BaseEntity):
     id: UUID
     student: UUID
+    coach: UUID
     start_date: datetime
     end_date: datetime
     status: EventStatus
