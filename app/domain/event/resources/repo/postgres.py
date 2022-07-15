@@ -31,16 +31,13 @@ class PostgresEventRepo(EventRepo):
         cursor = await self.session.execute(check_exist_query)
         if cursor.one_or_none():
             raise errors.EntityAlreadyExist
-        subquery__slots = sql.select(models.Slot.id).where(
+        query__slots = sql.select(models.Slot).where(
             models.Slot.start_date.between(start_date, end_date),
             models.Slot.end_date.between(start_date, end_date),
-        ).subquery()
-        insert_query = sql.insert(models.Event).values(
-            slots=subquery__slots,
-            status=EventStatus.active,
-            student_id=subquery__student_id,
         )
-        await self.session.execute(insert_query)
+        slots = await self.session.execute(query__slots)
+        new_event = models.Event(slots=slots, student_id=student_id, status=EventStatus.active)
+        self.session.add(new_event)
 
     async def find(self, event_id: UUID) -> EventEntity:
         query = sql.select(models.Event, models.User.uuid). \
