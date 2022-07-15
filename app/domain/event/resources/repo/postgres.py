@@ -35,7 +35,8 @@ class PostgresEventRepo(EventRepo):
             models.Slot.start_date.between(start_date, end_date),
             models.Slot.end_date.between(start_date, end_date),
         )
-        slots = await self.session.execute(query__slots)
+        cursor = await self.session.execute(query__slots)
+        slots = cursor.scalar()
         new_event = models.Event(slots=slots, student_id=student_id, status=EventStatus.active)
         self.session.add(new_event)
 

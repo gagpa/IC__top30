@@ -125,6 +125,7 @@ class Event(Base):
 
     student = relationship('Student', back_populates='events')
     slots = relationship(
-        'Slot', secondary=pivot__slots_events,
+        'Slot',
+        secondary=pivot__slots_events,
         back_populates='events',
     )
