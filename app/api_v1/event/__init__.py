@@ -58,8 +58,8 @@ async def _add(
         add_event__case: domain.event.use_cases.add.AddEventAsStudent = Depends(dependencies.get__add_event_case)
 ):
     await add_event__case.add(
-        start_date=datetime.fromtimestamp(int(new_event.start_date) / 1000),
-        end_date=datetime.fromtimestamp(int(new_event.end_date) / 1000),
+        start_date=datetime.fromtimestamp(int(new_event.start) / 1000),
+        end_date=datetime.fromtimestamp(int(new_event.end) / 1000),
         student_id=client.user_id,
     )
 
