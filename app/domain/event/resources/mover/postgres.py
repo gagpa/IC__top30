@@ -4,7 +4,7 @@ from uuid import UUID
 
 import sqlalchemy as sql
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import selectinload
 
 import errors
 from db.postgres import models
@@ -41,7 +41,7 @@ class PostgresEventMover(EventMover):
             raise errors.EntityAlreadyExist
         new_slots_for_event = possible_slots[:len(slots)]
         cursor = await self.session.execute(
-            sql.select(models.Event).where(models.Event.uuid == event_id)
+            sql.select(models.Event).where(models.Event.uuid == event_id).optional(selectinload(models.Event.slots))
         )
         event = cursor.one()
         event[0].slots = new_slots_for_event
