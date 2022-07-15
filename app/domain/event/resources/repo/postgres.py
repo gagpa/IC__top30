@@ -85,12 +85,12 @@ class PostgresEventRepo(EventRepo):
             total=1,
             items=[
                 EventEntity(
-                    id=event_from_db.uuid,
-                    status=event_from_db.status,
-                    student=foreign__student_id,
-                    start_date=min([slot.start_date for slot in event_from_db.slots]),
-                    end_date=max([slot.end_date for slot in event_from_db.slots]),
+                    id=data[0].uuid,
+                    status=data[0].status,
+                    student=data[1],
+                    start_date=min([slot.start_date for slot in data[0].slots]),
+                    end_date=max([slot.end_date for slot in data[0].slots]),
                 )
-                for event_from_db, foreign__student_id in cursor.all()
+                for data in cursor.all()
             ],
         )
