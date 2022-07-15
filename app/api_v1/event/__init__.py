@@ -2,9 +2,10 @@ import typing
 from datetime import datetime
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Response, status
-import errors
+from fastapi import APIRouter, Depends, status
+
 import domain
+import errors
 from api_v1.base.client_requests import Client
 from api_v1.base.dependencies import get__client
 from . import (
@@ -28,9 +29,6 @@ async def _filter(
             domain.event.use_cases.filter.FilterEventsForCoach,
         ] = Depends(dependencies.get__filter_events__case),
         find_user__case: domain.user.use_cases.find.FindUserInRepo = Depends(dependencies.get__find_user_in_repo),
-        find_coach__case: domain.coach.use_cases.find.FindCoachInRepo = Depends(dependencies.get__find_coach_in_repo),
-        find_student__case: domain.student.use_cases.find.FindStudentInRepo =
-        Depends(dependencies.get__find_student_in_repo),
 ):
     events = await filter_events__case.filter(client.user_id)
     items = []
@@ -54,6 +52,7 @@ async def _filter(
                     last_name=coach.last_name,
                     patronymic=coach.patronymic,
                 ),
+                status=event.status,
             )
         )
     return responses.FilterEventResponse(
@@ -86,42 +85,66 @@ async def _add(
     student = await find_user__case.find(event.student)
     return responses.FindEventResponse(
         data=responses.Event(
-                id=event.id,
-                start=int(round(event.start_date.timestamp())) * 1000,
-                end=int(round(event.end_date.timestamp())) * 1000,
-                student=responses.Student(
-                    id=event.student,
-                    first_name=student.first_name,
-                    last_name=student.last_name,
-                    patronymic=student.patronymic,
-                ),
-                coach=responses.Coach(
-                    id=event.coach,
-                    first_name=coach.first_name,
-                    last_name=coach.last_name,
-                    patronymic=coach.patronymic,
-                ),
+            id=event.id,
+            start=int(round(event.start_date.timestamp())) * 1000,
+            end=int(round(event.end_date.timestamp())) * 1000,
+            student=responses.Student(
+                id=event.student,
+                first_name=student.first_name,
+                last_name=student.last_name,
+                patronymic=student.patronymic,
             ),
+            coach=responses.Coach(
+                id=event.coach,
+                first_name=coach.first_name,
+                last_name=coach.last_name,
+                patronymic=coach.patronymic,
+            ),
+            status=event.status,
+        ),
     )
 
 
 @router.put(
     '/{_id}',
     dependencies=[Depends(dependencies.only__coach_student)],
-    status_code=status.HTTP_204_NO_CONTENT,
-    response_class=Response,
+    status_code=status.HTTP_200_OK,
+    response_model=responses.FindEventResponse,
 )
 async def _move(
         _id: UUID,
         new_start_date: int,
         client: Client = Depends(get__client),
         move_event__case: domain.event.use_cases.move_event.MoveEventAsStudent =
-        Depends(dependencies.get__move_event_case)
+        Depends(dependencies.get__move_event_case),
+        find_user__case: domain.user.use_cases.find.FindUserInRepo = Depends(dependencies.get__find_user_in_repo),
 ):
-    await move_event__case.move(
+    event = await move_event__case.move(
         student_id=client.user_id,
         event_id=_id,
         new_start_date=datetime.fromtimestamp(int(new_start_date) / 1000),
+    )
+    coach = await find_user__case.find(event.coach)
+    student = await find_user__case.find(event.student)
+    return responses.FindEventResponse(
+        data=responses.Event(
+            id=event.id,
+            start=int(round(event.start_date.timestamp())) * 1000,
+            end=int(round(event.end_date.timestamp())) * 1000,
+            student=responses.Student(
+                id=event.student,
+                first_name=student.first_name,
+                last_name=student.last_name,
+                patronymic=student.patronymic,
+            ),
+            coach=responses.Coach(
+                id=event.coach,
+                first_name=coach.first_name,
+                last_name=coach.last_name,
+                patronymic=coach.patronymic,
+            ),
+            status=event.status,
+        ),
     )
 
 
@@ -150,20 +173,21 @@ async def _cancel(
     student = await find_user__case.find(event.student)
     return responses.FindEventResponse(
         data=responses.Event(
-                id=event.id,
-                start=int(round(event.start_date.timestamp())) * 1000,
-                end=int(round(event.end_date.timestamp())) * 1000,
-                student=responses.Student(
-                    id=event.student,
-                    first_name=student.first_name,
-                    last_name=student.last_name,
-                    patronymic=student.patronymic,
-                ),
-                coach=responses.Coach(
-                    id=event.coach,
-                    first_name=coach.first_name,
-                    last_name=coach.last_name,
-                    patronymic=coach.patronymic,
-                ),
+            id=event.id,
+            start=int(round(event.start_date.timestamp())) * 1000,
+            end=int(round(event.end_date.timestamp())) * 1000,
+            student=responses.Student(
+                id=event.student,
+                first_name=student.first_name,
+                last_name=student.last_name,
+                patronymic=student.patronymic,
             ),
+            coach=responses.Coach(
+                id=event.coach,
+                first_name=coach.first_name,
+                last_name=coach.last_name,
+                patronymic=coach.patronymic,
+            ),
+            status=event.status,
+        ),
     )

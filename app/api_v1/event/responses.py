@@ -1,6 +1,7 @@
 from uuid import UUID
 
 from api_v1.base.responses import ResponseBody
+from domain.event.entity import EventStatus
 from helpers.paginated_list import PaginatedList
 
 
@@ -22,6 +23,7 @@ class Event(ResponseBody):
     id: UUID
     start: int
     end: int
+    status: EventStatus
     student: Student
     coach: Coach
 
