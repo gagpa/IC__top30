@@ -41,7 +41,7 @@ class PostgresEventMover(EventMover):
             raise errors.EntityAlreadyExist
         new_slots_for_event = possible_slots[:len(slots)]
         cursor = await self.session.execute(
-            sql.select(models.Event).where(models.Event.uuid == event_id).optionals(selectinload(models.Event.slots))
+            sql.select(models.Event).where(models.Event.uuid == event_id).options(selectinload(models.Event.slots))
         )
         event = cursor.one()
         event[0].slots = new_slots_for_event
