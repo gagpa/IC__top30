@@ -106,6 +106,7 @@ class Slot(Base):
     __tablename__ = 'slots'
 
     id = sql.Column(sql.Integer, primary_key=True)
+    uuid = sql.Column(UUID_field(as_uuid=True), nullable=False, default=uuid4)
     start_date = sql.Column(sql.DateTime, nullable=False)
     end_date = sql.Column(sql.DateTime, nullable=False)
     coach_id = sql.Column(sql.Integer, sql.ForeignKey('coaches.id', ondelete='CASCADE'), nullable=False)
