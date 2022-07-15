@@ -146,16 +146,27 @@ async def _accept_personal_coach(
 
 
 @router.delete(
-    '/personal_coach/{_id}',
+    '/personal_coach',
     status_code=status.HTTP_204_NO_CONTENT,
     response_class=Response,
     dependencies=[Depends(dependencies.only__student)],
     summary='Отказаться от коуча',
 )
 async def _decline_personal_coach(
-        _id: UUID,
         client: Client = Depends(dependencies.get__client),
         refuse_a_coach__case: domain.student.use_cases.refuse_personal_coach.SoftRefusePersonalCoach =
         Depends(dependencies.get__refuse_a_personal_coach),
 ):
     await refuse_a_coach__case.refuse(student_id=client.user_id)
+
+
+@router.delete(
+    '/personal_student/{_id}'
+)
+async def _decline_personal_student(
+        _id: UUID,
+        client: Client = Depends(dependencies.get__client),
+        refuse_a_student__case: domain.coach.use_cases.refuse_personal_student.SoftRefusePersonalStudent =
+        Depends(dependencies.get__refuse_a_personal_student),
+):
+    await refuse_a_student__case.refuse(student_id=_id)
