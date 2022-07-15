@@ -22,7 +22,7 @@ class PostgresEventMover(EventMover):
             join(models.Event, models.Event.id == models.pivot__slots_events.c.event_id). \
             where(models.Event.uuid == event_id)
         cursor = await self.session.execute(query__slots)
-        slots: typing.List[models.Slot] = cursor.all()[0]
+        slots: typing.List[models.Slot] = cursor.all()
         start = min([slot.start_date for slot in slots])
         end = max([slot.end_date for slot in slots])
         time_delta = end - start
@@ -39,7 +39,7 @@ class PostgresEventMover(EventMover):
         possible_slots = cursor.all()
         if len(possible_slots) < len(slots):
             raise errors.EntityAlreadyExist
-        new_slots_for_event = possible_slots[:len(slots)]
+        new_slots_for_event = [slot[0] for slot in possible_slots[:len(slots)]]
         cursor = await self.session.execute(
             sql.select(models.Event).where(models.Event.uuid == event_id).options(selectinload(models.Event.slots))
         )
