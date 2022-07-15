@@ -6,8 +6,8 @@ from helpers.paginated_list import PaginatedList
 
 class Event(ResponseBody):
     id: UUID
-    start_date: int
-    end_date: int
+    start: int
+    end: int
     student_id: UUID
 
 
