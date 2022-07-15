@@ -75,9 +75,7 @@ class PostgresEventRepo(EventRepo):
                 subquery()
             query = query.where(models.Event.student_id.in_(subquery_students_id_of_coach))
         if student_id:
-            query = query.join(models.Student). \
-                join(models.User, models.User.id == models.Student.user_id). \
-                where(models.User.uuid == student_id)
+            query = query.where(models.User.uuid == student_id)
         cursor = await self.session.execute(query)
         return ListEventEntity(
             max_page=1,
