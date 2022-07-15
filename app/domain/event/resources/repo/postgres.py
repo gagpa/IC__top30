@@ -41,10 +41,14 @@ class PostgresEventRepo(EventRepo):
         new_event = models.Event(slots=slots, student_id=subquery__student_id, status=EventStatus.active)
         self.session.add(new_event)
         await self.session.flush()
-        coach_query = sql.select(models.User.uuid). \
-            join(models.Coach, models.Coach.user_id == models.User.id). \
+
+        coach_user__alias = aliased(models.User)
+        student_user__alias = aliased(models.User)
+        coach_query = sql.select(coach_user__alias.uuid). \
+            join(models.Coach, models.Coach.user_id == coach_user__alias.id). \
             join(models.Student, models.Student.coach_id == models.Coach.id).\
-            where(models.Student.id == new_event.student_id)
+            join(student_user__alias, student_user__alias.id == models.Student.user_id).\
+            where(student_user__alias.uuid == student_id)
         cursor = await self.session.execute(coach_query)
         return EventEntity(
             id=new_event.uuid,
