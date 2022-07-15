@@ -26,22 +26,41 @@ async def _filter(
         filter_events__case: typing.Union[
             domain.event.use_cases.filter.FilterEventsForStudent,
             domain.event.use_cases.filter.FilterEventsForCoach,
-        ] = Depends(dependencies.get__filter_events__case)
+        ] = Depends(dependencies.get__filter_events__case),
+        find_user__case: domain.user.use_cases.find.FindUserInRepo = Depends(dependencies.get__find_user_in_repo),
+        find_coach__case: domain.coach.use_cases.find.FindCoachInRepo = Depends(dependencies.get__find_coach_in_repo),
+        find_student__case: domain.student.use_cases.find.FindStudentInRepo =
+        Depends(dependencies.get__find_student_in_repo),
 ):
     events = await filter_events__case.filter(client.user_id)
+    items = []
+    for event in events.items:
+        coach = await find_user__case.find(event.coach)
+        student = await find_user__case.find(event.student)
+        items.append(
+            responses.Event(
+                id=event.id,
+                start=int(round(event.start_date.timestamp())) * 1000,
+                end=int(round(event.end_date.timestamp())) * 1000,
+                student=responses.Student(
+                    id=event.student,
+                    first_name=student.first_name,
+                    last_name=student.last_name,
+                    patronymic=student.patronymic,
+                ),
+                coach=responses.Coach(
+                    id=event.coach,
+                    first_name=coach.first_name,
+                    last_name=coach.last_name,
+                    patronymic=coach.patronymic,
+                ),
+            )
+        )
     return responses.FilterEventResponse(
         data=responses.EventList(
             max_page=events.max_page,
             total=events.total,
-            items=[
-                responses.Event(
-                    id=event.id,
-                    start=int(round(event.start_date.timestamp())) * 1000,
-                    end=int(round(event.end_date.timestamp())) * 1000,
-                    student_id=event.student,
-                )
-                for event in events.items
-            ],
+            items=items,
         )
     )
 
