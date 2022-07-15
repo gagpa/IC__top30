@@ -1,7 +1,17 @@
-from .base import MoveEvent
+from datetime import datetime
+from uuid import UUID
+
+from domain.event.resources.mover import EventMover
 from domain.event.resources.repo import EventRepo
-from domain.event.resources.
+from .base import MoveEvent
+
+
 class MoveEventAsStudent(MoveEvent):
 
+    def __init__(self, event_mover: EventMover, event_repo: EventRepo):
+        self.event_repo = event_repo
+        self.event_mover = event_mover
 
-    def __init__(self, event_mover, event_repo:):
+    async def move(self, student_id: UUID, event_id: UUID, new_start_date: datetime):
+        event = await self.event_repo.find(event_id=event_id)
+        await self.event_mover.move(event_id=event.id, new_start_date=new_start_date)
