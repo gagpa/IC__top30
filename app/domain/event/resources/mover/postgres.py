@@ -44,5 +44,6 @@ class PostgresEventMover(EventMover):
             sql.select(models.Event).where(models.Event.uuid == event_id).options(selectinload(models.Event.slots))
         )
         event = cursor.one()
+        print(new_slots_for_event)
         event[0].slots = new_slots_for_event
         self.session.add(event[0])
