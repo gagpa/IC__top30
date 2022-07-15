@@ -20,17 +20,21 @@ class PostgresEventRepo(EventRepo):
     async def add(self, start_date: datetime, end_date: datetime, student_id: UUID) -> EventEntity:
         subquery__student_id = sql.select(models.Student.id).join(models.User).where(
             models.User.uuid == student_id).subquery()
-        subquery__slots = sql.select(models.Slot.start_date).where(
+        subquery__slots_ids = sql.select(models.Slot.id).where(
             models.Slot.start_date.between(start_date, end_date),
             models.Slot.end_date.between(start_date, end_date),
-        )
-        check_exist_query = sql.select(models.Event).where(
+        ).subquery()
+        check_exist_query = sql.select(models.Event).join(models.pivot__slots_events).where(
             models.Event.student_id == subquery__student_id,
-            models.Event.slots.in_(subquery__slots),
+            models.pivot__slots_events.slot_id.in_(subquery__slots_ids),
         )
         cursor = await self.session.execute(check_exist_query)
         if cursor.one_or_none():
             raise errors.EntityAlreadyExist
+        subquery__slots = sql.select(models.Slot.id).where(
+            models.Slot.start_date.between(start_date, end_date),
+            models.Slot.end_date.between(start_date, end_date),
+        ).subquery()
         insert_query = sql.insert(models.Event).values(
             slots=subquery__slots,
             status=EventStatus.active,
