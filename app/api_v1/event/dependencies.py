@@ -39,3 +39,23 @@ async def get__move_event_case(session: AsyncSession = fastapi.Depends(get__sess
     event_repo = event.resources.repo.PostgresEventRepo(session=session)
     event_mover = event.resources.mover.PostgresEventMover(session=session)
     return event.use_cases.move_event.MoveEventAsStudent(event_mover=event_mover, event_repo=event_repo)
+
+
+async def get__cancel_event_case(client: Client = fastapi.Depends(get__client),
+                                 session: AsyncSession = fastapi.Depends(get__session)):
+    event_deleter = event.resources.deleter.PostgrestEventDeleter(session=session)
+    event_repo = event.resources.repo.PostgresEventRepo(session=session)
+
+    if client.role == auth.entity.Role.STUDENT:
+        event_status_changer = event.resources.stutus_changer.PostgresEventStatusChanger(session=session)
+        return event.use_cases.cancel.CancelEventAsStudent(
+            event_deleter=event_deleter,
+            event_repo=event_repo,
+            event_status_changer=event_status_changer,
+        )
+    elif client.role == auth.entity.Role.COACH:
+        return event.use_cases.cancel.CancelEventAsCoach(
+            event_deleter=event_deleter,
+            event_repo=event_repo,
+        )
+    raise Exception

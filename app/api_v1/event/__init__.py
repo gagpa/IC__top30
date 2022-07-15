@@ -82,3 +82,19 @@ async def _move(
         event_id=_id,
         new_start_date=datetime.fromtimestamp(int(new_start_date) / 1000),
     )
+
+
+@router.delete(
+    '/{_id}',
+    dependencies=[Depends(dependencies.only__coach_student)],
+    status_code=status.HTTP_204_NO_CONTENT,
+    response_class=Response,
+)
+async def _cancel(
+        _id: UUID,
+        cancel_event__case: typing.Union[
+            domain.event.use_cases.cancel.CancelEventAsStudent,
+            domain.event.use_cases.cancel.CancelEventAsCoach,
+        ] = Depends(dependencies.get__cancel_event_case),
+):
+    await cancel_event__case.cancel(event_id=_id)
