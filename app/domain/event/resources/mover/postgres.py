@@ -23,8 +23,8 @@ class PostgresEventMover(EventMover):
             where(models.Event.uuid == event_id)
         cursor = await self.session.execute(query__slots)
         slots: typing.List[models.Slot] = cursor.all()
-        start = min([slot.start_date for slot in slots])
-        end = max([slot.end_date for slot in slots])
+        start = min([slot[0].start_date for slot in slots])
+        end = max([slot[0].end_date for slot in slots])
         time_delta = end - start
         subquery__coach_id = sql.select(models.Student.coach_id). \
             join(models.Event). \
