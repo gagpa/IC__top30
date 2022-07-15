@@ -74,3 +74,8 @@ async def get__find_user_in_repo(session: AsyncSession = fastapi.Depends(get__se
 async def get__find_student_in_repo(session: AsyncSession = fastapi.Depends(get__session)):
     student_repo = student.resources.student_repo.PostgresStudentRepo(session)
     return student.use_cases.find.FindStudentInRepo(student_repo=student_repo)
+
+
+async def get__find_event_in_repo(session: AsyncSession = fastapi.Depends(get__session)):
+    event_repo = event.resources.repo.PostgresEventRepo(session)
+    return event.use_cases.find.FindEventInRepo(event_repo=event_repo)

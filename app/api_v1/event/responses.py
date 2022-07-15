@@ -32,3 +32,8 @@ EventList = PaginatedList[Event]
 class FilterEventResponse(ResponseBody):
     success: bool = True
     data: EventList
+
+
+class FindEventResponse(ResponseBody):
+    success: bool = True
+    data: Event

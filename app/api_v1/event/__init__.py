@@ -3,7 +3,7 @@ from datetime import datetime
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Response, status
-
+import errors
 import domain
 from api_v1.base.client_requests import Client
 from api_v1.base.dependencies import get__client
@@ -106,8 +106,8 @@ async def _move(
 @router.delete(
     '/{_id}',
     dependencies=[Depends(dependencies.only__coach_student)],
-    status_code=status.HTTP_204_NO_CONTENT,
-    response_class=Response,
+    status_code=status.HTTP_200_OK,
+    response_model=responses.FindEventResponse,
 )
 async def _cancel(
         _id: UUID,
@@ -115,5 +115,33 @@ async def _cancel(
             domain.event.use_cases.cancel.CancelEventAsStudent,
             domain.event.use_cases.cancel.CancelEventAsCoach,
         ] = Depends(dependencies.get__cancel_event_case),
+        find_event__case: domain.event.use_cases.find.FindEventInRepo = Depends(dependencies.get__find_event_in_repo),
+        find_user__case: domain.user.use_cases.find.FindUserInRepo = Depends(dependencies.get__find_user_in_repo),
 ):
+    event = await find_event__case.find(event_id=_id)
     await cancel_event__case.cancel(event_id=_id)
+    try:
+        event = await find_event__case.find(event_id=_id)
+    except errors.EntityNotFounded:
+        pass
+    coach = await find_user__case.find(event.coach)
+    student = await find_user__case.find(event.student)
+    return responses.FindEventResponse(
+        data=responses.Event(
+                id=event.id,
+                start=int(round(event.start_date.timestamp())) * 1000,
+                end=int(round(event.end_date.timestamp())) * 1000,
+                student=responses.Student(
+                    id=event.student,
+                    first_name=student.first_name,
+                    last_name=student.last_name,
+                    patronymic=student.patronymic,
+                ),
+                coach=responses.Coach(
+                    id=event.coach,
+                    first_name=coach.first_name,
+                    last_name=coach.last_name,
+                    patronymic=coach.patronymic,
+                ),
+            ),
+    )
