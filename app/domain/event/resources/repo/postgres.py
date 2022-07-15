@@ -26,7 +26,7 @@ class PostgresEventRepo(EventRepo):
         ).subquery()
         check_exist_query = sql.select(models.Event).join(models.pivot__slots_events).where(
             models.Event.student_id == subquery__student_id,
-            models.pivot__slots_events.slot_id.in_(subquery__slots_ids),
+            models.pivot__slots_events.c.slot_id.in_(subquery__slots_ids),
         )
         cursor = await self.session.execute(check_exist_query)
         if cursor.one_or_none():
