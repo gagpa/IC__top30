@@ -36,10 +36,8 @@ async def _filter(
             items=[
                 responses.Event(
                     id=event.id,
-                    # start=int(round(event.start_date.timestamp())) * 1000,
-                    # end=int(round(event.end_date.timestamp())) * 1000,
-                    start=event.start_date,
-                    end=event.end_date,
+                    start=int(round(event.start_date.timestamp())) * 1000,
+                    end=int(round(event.end_date.timestamp())) * 1000,
                     student_id=event.student,
                 )
                 for event in events.items
