@@ -41,11 +41,9 @@ class PostgresEventMover(EventMover):
             raise errors.EntityAlreadyExist
         new_slots_for_event = possible_slots[:len(slots)]
         cursor = await self.session.execute(
-            sql.select(models.pivot__slots_events).where(models.Event.uuid == event_id)
+            sql.select(models.Event).where(models.Event.uuid == event_id)
         )
-        event_slot_links = cursor.all()
-        for link, new_slot in zip(event_slot_links, new_slots_for_event):
-            print(link)
-            print(new_slot)
-            link[0].c.slot_id = new_slot.id
-            self.session.add(link[0])
+        event = cursor.one()
+        print(event)
+        event.slots = new_slots_for_event
+        self.session.add(event)
