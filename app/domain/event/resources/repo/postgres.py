@@ -5,7 +5,7 @@ from uuid import UUID
 import sqlalchemy as sql
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import lazyload
 import errors
 from db.postgres import models
 from domain.event.entity import EventEntity, EventStatus, ListEventEntity
@@ -69,7 +69,7 @@ class PostgresEventRepo(EventRepo):
         query = sql.select(models.Event, models.User.uuid). \
             join(models.Student, models.Event.student_id == models.Student.id). \
             join(models.User, models.User.id == models.Student.user_id). \
-            options(joinedload(models.Event.slots))
+            options(lazyload(models.Event.slots))
         if coach_id:
             subquery_students_id_of_coach = sql.select(models.Student.id). \
                 join(models.Coach, models.Student.coach_id == models.Coach.id). \
