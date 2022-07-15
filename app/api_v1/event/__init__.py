@@ -48,7 +48,7 @@ async def _filter(
 
 @router.post(
     '',
-    dependencies=Depends(dependencies.only__student),
+    dependencies=[Depends(dependencies.only__student)],
     status_code=status.HTTP_204_NO_CONTENT,
     response_class=Response,
 )
@@ -66,7 +66,7 @@ async def _add(
 
 @router.put(
     '/{_id}',
-    dependencies=Depends(dependencies.only__coach_student),
+    dependencies=[Depends(dependencies.only__coach_student)],
     status_code=status.HTTP_204_NO_CONTENT,
     response_class=Response,
 )
