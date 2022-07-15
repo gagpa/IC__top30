@@ -25,14 +25,14 @@ class PostgresEventMover(EventMover):
         start = min([slot.start_date for slot in slots])
         end = max([slot.end_date for slot in slots])
         time_delta = end - start
-        subquery__student = sql.select(models.Student.id). \
+        subquery__coach_id = sql.select(models.Student.coach_id). \
             join(models.Event). \
             where(models.Event.uuid == event_id). \
             subquery()
-        subquery__coach = sql.select(models.Coach.id).where(models.Coach.id == subquery__student).subquery()
+        subquery__coach = sql.select(models.Coach.id).where(models.Coach.id == subquery__coach_id).subquery()
         query__possible_slots = sql.select(models.Slot).where(
             models.Slot.coach_id == subquery__coach,
-            models.Slot.start_date.between(new_start_date, new_start_date + time_delta),
+            models.Slot.start_date >= new_start_date,
         )
         cursor = await self.session.execute(query__possible_slots)
         possible_slots = cursor.all()
