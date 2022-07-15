@@ -68,8 +68,8 @@ async def _filter(
 @router.post(
     '',
     dependencies=[Depends(dependencies.only__student)],
-    status_code=status.HTTP_204_NO_CONTENT,
-    response_class=Response,
+    status_code=status.HTTP_201_CREATED,
+    response_model=responses.FindEventResponse,
 )
 async def _add(
         new_event: client_requests.NewEventRequest,
@@ -103,7 +103,6 @@ async def _add(
                 ),
             ),
     )
-
 
 
 @router.put(
