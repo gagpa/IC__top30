@@ -41,8 +41,10 @@ async def get__move_event_case(session: AsyncSession = fastapi.Depends(get__sess
     return event.use_cases.move_event.MoveEventAsStudent(event_mover=event_mover, event_repo=event_repo)
 
 
-async def get__cancel_event_case(client: Client = fastapi.Depends(get__client),
-                                 session: AsyncSession = fastapi.Depends(get__session)):
+async def get__cancel_event_case(
+        client: Client = fastapi.Depends(get__client),
+        session: AsyncSession = fastapi.Depends(get__session),
+):
     event_deleter = event.resources.deleter.PostgrestEventDeleter(session=session)
     event_repo = event.resources.repo.PostgresEventRepo(session=session)
 
