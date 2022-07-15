@@ -93,18 +93,6 @@ class Photo(Base):
     user = relationship('User', back_populates='photo')
 
 
-class Slot(Base):
-    __tablename__ = 'slots'
-
-    id = sql.Column(sql.Integer, primary_key=True)
-    uuid = sql.Column(UUID_field(as_uuid=True), nullable=False, default=uuid4)
-    start_date = sql.Column(sql.DateTime, nullable=False)
-    end_date = sql.Column(sql.DateTime, nullable=False)
-    coach_id = sql.Column(sql.Integer, sql.ForeignKey('coaches.id', ondelete='CASCADE'), nullable=False)
-
-    coach = relationship('Coach', back_populates='slots')
-
-
 pivot__slots_events = sql.Table(
     'pivot__slots_events',
     Base.metadata,
@@ -112,6 +100,18 @@ pivot__slots_events = sql.Table(
     sql.Column('slot_id', sql.Integer, sql.ForeignKey('slots.id', ondelete='CASCADE'), unique=True, nullable=False),
     sql.Column('event_id', sql.Integer, sql.ForeignKey('events.id', ondelete='CASCADE'), unique=True, nullable=False),
 )
+
+
+class Slot(Base):
+    __tablename__ = 'slots'
+
+    id = sql.Column(sql.Integer, primary_key=True)
+    start_date = sql.Column(sql.DateTime, nullable=False)
+    end_date = sql.Column(sql.DateTime, nullable=False)
+    coach_id = sql.Column(sql.Integer, sql.ForeignKey('coaches.id', ondelete='CASCADE'), nullable=False)
+
+    coach = relationship('Coach', back_populates='slots')
+    events = relationship('Event', secondary=pivot__slots_events, back_populates='slots')
 
 
 class Event(Base):
@@ -123,3 +123,7 @@ class Event(Base):
     student_id = sql.Column(sql.Integer, sql.ForeignKey('students.id', ondelete='CASCADE'), unique=True, nullable=False)
 
     student = relationship('Student', back_populates='events')
+    slots = relationship(
+        'Slot', secondary=pivot__slots_events,
+        back_populates='events',
+    )
