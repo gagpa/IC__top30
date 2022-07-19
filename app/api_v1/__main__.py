@@ -7,7 +7,7 @@ from settings import AsyncPostgresSettings
 from .errors import add_handlers
 from .router import add_routers
 
-app = fastapi.FastAPI(root_path='/api/v1')
+app = fastapi.FastAPI()
 
 add_routers(app)
 add_handlers(app)
