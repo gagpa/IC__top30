@@ -23,7 +23,7 @@ class PostgresUserPhotoRepo(UserPhotoRepo):
         subquery_user = sql.select(models.User.id).where(models.User.uuid == user_id).subquery()
         query = sql.select(models.Photo.img).where(models.Photo.user_id == subquery_user)
         cursor = await self.session.execute(query)
-        photo = cursor.one()
+        photo = cursor.one()[0]
         if not photo:
             raise errors.EntityNotFounded
         return photo
