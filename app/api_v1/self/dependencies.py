@@ -62,3 +62,16 @@ async def get__choose_free_coach(session: AsyncSession = fastapi.Depends(get__se
         personal_coach_changer=personal_coach_changer,
         coach_verifier=coach_verifier,
     )
+
+
+async def get__refuse_a_personal_student(session: AsyncSession = fastapi.Depends(get__session)):
+    student_repo = student.resources.student_repo.PostgresStudentRepo(session=session)
+    coach_changer = student.resources.personal_coach_changer.PostgresPersonalCoachChanger(session=session)
+    event_deleter = event.resources.deleter.PostgrestEventDeleter(session=session)
+    event_repo = event.resources.repo.PostgresEventRepo(session=session)
+    return coach.use_cases.refuse_personal_student.SoftRefusePersonalStudent(
+        student_repo=student_repo,
+        coach_changer=coach_changer,
+        event_deleter=event_deleter,
+        event_repo=event_repo,
+    )

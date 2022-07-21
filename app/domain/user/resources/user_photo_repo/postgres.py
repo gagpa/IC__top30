@@ -14,18 +14,22 @@ class PostgresUserPhotoRepo(UserPhotoRepo):
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def add(self, user_id: UUID, photo: bytes):
-        pass
+    async def add(self, user_id: UUID, photo: str):
+        subquery_user = sql.select(models.User.id).where(models.User.uuid == user_id).subquery()
+        query = sql.insert(models.Photo).values(user_id=subquery_user, img=photo)
+        await self.session.execute(query)
 
-    async def find(self, user_id: UUID) -> bytes:
-        query = sql.select(models.User.photo).where(models.User.uuid == user_id)
+    async def find(self, user_id: UUID) -> str:
+        subquery_user = sql.select(models.User.id).where(models.User.uuid == user_id).subquery()
+        query = sql.select(models.Photo.img).where(models.Photo.user_id == subquery_user)
         cursor = await self.session.execute(query)
         photo = cursor.one()
         if not photo:
             raise errors.EntityNotFounded
         return photo
 
-    async def filter(self, user_id: typing.Optional[UUID] = None) -> typing.List[bytes]:
-        query = sql.select(models.User.photo).where(models.User.uuid == user_id)
+    async def filter(self, user_id: typing.Optional[UUID] = None) -> typing.List[str]:
+        subquery_user = sql.select(models.User.id).where(models.User.uuid == user_id).subquery()
+        query = sql.select(models.Photo.img).where(models.Photo.user_id == subquery_user)
         cursor = await self.session.execute(query)
         return cursor.all()

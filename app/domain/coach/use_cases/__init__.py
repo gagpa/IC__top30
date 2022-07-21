@@ -4,5 +4,6 @@ from . import (
     delete,
     filter,
     find,
+    refuse_personal_student,
     update,
 )

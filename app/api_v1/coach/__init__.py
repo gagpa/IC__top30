@@ -44,7 +44,6 @@ async def _find(
             last_name=user.last_name,
             email=user.email,
             phone=user.phone,
-            photo=user.photo,
             patronymic=user.patronymic,
         )
     )
@@ -91,7 +90,6 @@ async def _filter(
                     last_name=user.last_name,
                     email=user.email,
                     phone=user.phone,
-                    photo=user.photo,
                     patronymic=user.patronymic,
                     students_ids=coach.students,
                 )

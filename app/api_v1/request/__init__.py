@@ -61,7 +61,6 @@ async def _list(
                 last_name=user.last_name,
                 email=user.email,
                 phone=user.phone,
-                photo=user.photo,
                 patronymic=user.patronymic,
                 students_ids=[],
             ) if isinstance(data, domain.coach.entity.CoachEntity) else

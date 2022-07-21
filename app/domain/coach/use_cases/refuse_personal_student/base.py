@@ -5,5 +5,5 @@ from uuid import UUID
 class RefusePersonalStudent(ABC):
 
     @abstractmethod
-    async def refuse(self, coach_id: UUID, student_id: UUID):
+    async def refuse(self, student_id: UUID):
         """Отказаться от студента"""

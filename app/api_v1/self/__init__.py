@@ -41,7 +41,6 @@ async def _find(
             last_name=user.last_name,
             email=user.email,
             phone=user.phone,
-            photo=user.photo,
             patronymic=user.patronymic,
             students_ids=coach.students,
         )
@@ -58,7 +57,6 @@ async def _find(
             last_name=user.last_name,
             email=user.email,
             phone=user.phone,
-            photo=user.photo,
             patronymic=user.patronymic,
             coach_id=student.coach_id,
         )
@@ -70,7 +68,6 @@ async def _find(
             last_name=admin.last_name,
             email=admin.email,
             phone=admin.phone,
-            photo=admin.photo,
             patronymic=admin.patronymic,
         )
     return responses.SelfResponse(data=data)
@@ -160,13 +157,13 @@ async def _decline_personal_coach(
     await refuse_a_coach__case.refuse(student_id=client.user_id)
 
 
-# @router.delete(
-#     '/personal_student/{_id}'
-# )
-# async def _decline_personal_student(
-#         _id: UUID,
-#         client: Client = Depends(dependencies.get__client),
-#         refuse_a_student__case: domain.coach.use_cases.refuse_personal_student.SoftRefusePersonalStudent =
-#         Depends(dependencies.get__refuse_a_personal_student),
-# ):
-#     await refuse_a_student__case.refuse(student_id=_id)
+@router.delete(
+    '/personal_student/{_id}'
+)
+async def _decline_personal_student(
+        _id: UUID,
+        client: Client = Depends(dependencies.get__client),
+        refuse_a_student__case: domain.coach.use_cases.refuse_personal_student.SoftRefusePersonalStudent =
+        Depends(dependencies.get__refuse_a_personal_student),
+):
+    await refuse_a_student__case.refuse(student_id=_id)

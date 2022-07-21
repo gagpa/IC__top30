@@ -40,7 +40,6 @@ async def _find(
             last_name=user.last_name,
             email=user.email,
             phone=user.phone,
-            photo=user.photo,
             patronymic=user.patronymic,
             has_access=user.has_access,
         )

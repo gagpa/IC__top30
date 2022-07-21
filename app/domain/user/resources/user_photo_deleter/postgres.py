@@ -13,5 +13,6 @@ class PostgresUserPhotoDeleter(UserPhotoDeleter):
         self.session = session
 
     async def delete(self, user_id: UUID):
-        query = sql.delete(models.Photo).join(models.User).where(models.User.uuid == user_id)
+        subquery = sql.select(models.User.id).where(models.User.uuid == user_id).subquery()
+        query = sql.delete(models.Photo).where(models.Photo.user_id == subquery)
         await self.session.execute(query)
