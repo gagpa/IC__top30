@@ -2,7 +2,7 @@ import typing
 from uuid import UUID
 
 import pydantic
-from sqlalchemy import update, select
+from sqlalchemy import update, select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.util._collections import immutabledict
 
@@ -42,7 +42,11 @@ class PostgresStudentUpdater(StudentUpdater):
         if phone:
             user_update_obj['phone'] = phone
         if photo:
-            user_update_obj['photo'] = models.Photo(img=photo)
+            update_photo_query = insert(models.Photo).values(
+                img=photo,
+                user_id=select(models.User).where(models.User.uuid == student_id),
+            )
+            await self.session.execute(update_photo_query)
         if email:
             user_update_obj['email'] = str(email)
         if user_update_obj:
