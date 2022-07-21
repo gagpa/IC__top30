@@ -84,7 +84,7 @@ class Admin(Base):
 
 
 class Photo(Base):
-    __tablename__ = 'photo'
+    __tablename__ = 'photos'
 
     id = sql.Column(sql.Integer, primary_key=True)
     img = sql.Column(BYTEA, nullable=False)
