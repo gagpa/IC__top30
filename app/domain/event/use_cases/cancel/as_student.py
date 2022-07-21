@@ -17,6 +17,7 @@ class CancelEventAsStudent(CancelEvent):
 
     async def cancel(self, event_id: UUID):
         event = await self.event_repo.find(event_id=event_id)
+        print(event.start_date - datetime.now() < timedelta(hours=24))
         if event.start_date - datetime.now() < timedelta(hours=24):
             await self.event_status_changer.change(status=EventStatus.burned, event_id=event_id)
         else:
