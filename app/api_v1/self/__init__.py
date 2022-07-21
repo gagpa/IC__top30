@@ -43,7 +43,7 @@ async def _find(
             phone=user.phone,
             patronymic=user.patronymic,
             students_ids=coach.students,
-            photo=f'https://top30mt.ru/api/v1/{client.user_id}/avatar'
+            photo=f'https://top30mt.ru/api/v1/user/{client.user_id}/avatar',
         )
     elif client.role == Role.STUDENT:
         user = await find_user__case.find(client.user_id)
@@ -60,7 +60,7 @@ async def _find(
             phone=user.phone,
             patronymic=user.patronymic,
             coach_id=student.coach_id,
-            photo=f'https://top30mt.ru/api/v1/{client.user_id}/avatar',
+            photo=f'https://top30mt.ru/api/v1/user/{client.user_id}/avatar',
         )
     else:
         admin = await find_user__case.find(client.user_id)
@@ -71,7 +71,7 @@ async def _find(
             email=admin.email,
             phone=admin.phone,
             patronymic=admin.patronymic,
-            photo=f'https://top30mt.ru/api/v1/{client.user_id}/avatar',
+            photo=f'https://top30mt.ru/api/v1/user/{client.user_id}/avatar',
         )
     return responses.SelfResponse(data=data)
 
