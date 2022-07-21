@@ -42,6 +42,7 @@ class PostgresStudentUpdater(StudentUpdater):
         if phone:
             user_update_obj['phone'] = phone
         if photo:
+            print(photo)
             user_update_obj['photo'] = models.Photo(img=photo)
         if email:
             user_update_obj['email'] = str(email)
