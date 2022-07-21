@@ -44,7 +44,7 @@ class PostgresStudentUpdater(StudentUpdater):
         if photo:
             update_photo_query = insert(models.Photo).values(
                 img=photo,
-                user_id=select(models.User).where(models.User.uuid == student_id),
+                user_id=select(models.User.id).where(models.User.uuid == student_id),
             )
             await self.session.execute(update_photo_query)
         if email:
