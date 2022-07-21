@@ -23,7 +23,8 @@ async def get__find_student_in_repo(session: AsyncSession = fastapi.Depends(get_
 
 async def get__update_student_in_repo(session: AsyncSession = fastapi.Depends(get__session)):
     student_updater = student.resources.updater.PostgresStudentUpdater(session)
-    return student.use_cases.update.UpdateStudentInRepo(student_updater=student_updater)
+    student_repo = student.resources.student_repo.PostgresStudentRepo(session)
+    return student.use_cases.update.UpdateStudentInRepo(student_updater=student_updater, student_repo=student_repo)
 
 
 async def get__update_coach_in_repo(session: AsyncSession = fastapi.Depends(get__session)):
