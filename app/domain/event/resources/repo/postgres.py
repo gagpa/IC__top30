@@ -67,6 +67,7 @@ class PostgresEventRepo(EventRepo):
             join(student_user__alias, student_user__alias.id == models.Student.user_id). \
             join(models.Coach, models.Coach.id == models.Student.coach_id). \
             join(coach_user__alias, coach_user__alias.id == models.Coach.user_id). \
+            where(models.Event.uuid == event_id). \
             options(selectinload(models.Event.slots))
         cursor = await self.session.execute(query)
         try:
