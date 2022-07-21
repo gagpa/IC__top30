@@ -22,8 +22,8 @@ async def get__accept_student_in_repo(session: AsyncSession = fastapi.Depends(ge
 
 
 async def get__find_user_photo(session: AsyncSession = fastapi.Depends(get__session)):
-    user_repo = user.resources.repo.PostgresUserRepo(session=session)
-    return user.use_cases.find_photo.FindLastPhoto(user_repo=user_repo)
+    user_photo_repo = user.resources.user_photo_repo.PostgresUserPhotoRepo(session=session)
+    return user.use_cases.find_photo.FindLastPhoto(photo_repo=user_photo_repo)
 
 
 async def get__add_photo_to_user(session: AsyncSession = fastapi.Depends(get__session)):

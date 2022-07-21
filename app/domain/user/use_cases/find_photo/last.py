@@ -1,13 +1,13 @@
-from .base import FindPhoto
-from domain.user.resources.repo import UserRepo
 from uuid import UUID
+
+from domain.user.resources.user_photo_repo import UserPhotoRepo
+from .base import FindPhoto
 
 
 class FindLastPhoto(FindPhoto):
 
-    def __init__(self, user_repo: UserRepo):
-        self.user_repo = user_repo
+    def __init__(self, photo_repo: UserPhotoRepo):
+        self.photo_repo = photo_repo
 
     async def find(self, user_id: UUID) -> bytes:
-        user = await self.user_repo.find(user_id)
-        return bytes(user.photo)
+        return await self.photo_repo.find(user_id)
