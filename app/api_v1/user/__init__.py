@@ -21,7 +21,7 @@ async def _avatar(
         find_user_photo_case: user.use_cases.find_photo.FindLastPhoto = Depends(dependencies.get__find_user_photo),
 ):
     photo = await find_user_photo_case.find(user_id)
-    return FileResponse(photo, filename='avatar.jpg')
+    return Response(content=photo, media_type='image/png')
 
 
 @router.put(
