@@ -28,7 +28,7 @@ class User(Base):
     student_data = relationship('Student', uselist=False)
     admin_data = relationship('Admin', uselist=False)
     token = relationship('Token', uselist=False)
-    photo = relationship('Photo', uselist=False)
+    photo = relationship('Photo', uselist=False, back_populates='user')
 
 
 class Coach(Base):
