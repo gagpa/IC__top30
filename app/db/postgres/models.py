@@ -98,7 +98,7 @@ pivot__slots_events = sql.Table(
     Base.metadata,
     sql.Column('id', sql.Integer, primary_key=True),
     sql.Column('slot_id', sql.Integer, sql.ForeignKey('slots.id', ondelete='CASCADE'), unique=True, nullable=False),
-    sql.Column('event_id', sql.Integer, sql.ForeignKey('events.id', ondelete='CASCADE'), unique=True, nullable=False),
+    sql.Column('event_id', sql.Integer, sql.ForeignKey('events.id', ondelete='CASCADE'), nullable=False),
 )
 
 
