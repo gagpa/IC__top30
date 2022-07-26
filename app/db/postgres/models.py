@@ -84,10 +84,10 @@ class Admin(Base):
 
 
 class Photo(Base):
-    __tablename__ = 'photos_2'
+    __tablename__ = 'photos'
 
     id = sql.Column(sql.Integer, primary_key=True)
-    img = sql.Column(sql.String, nullable=False)
+    img = sql.Column(BYTEA, nullable=False)
     user_id = sql.Column(sql.Integer, sql.ForeignKey('users.id', ondelete='CASCADE'), unique=True, nullable=False)
 
     user = relationship('User', back_populates='photo')
