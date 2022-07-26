@@ -21,7 +21,7 @@ async def _avatar(
 ):
     photo = await find_user_photo_case.find(user_id)
     return Response(
-        content=bytes(photo, 'utf-8'),
+        content=photo,
         media_type='image/png',
         headers={"Content-Disposition": f'attachment; filename="avatar.png"'},
     )
