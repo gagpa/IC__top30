@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.postgres import models
 from .base import AuthenticationService
-from .errors import AuthenticationError
+from .errors import AuthenticationError, AccessDenied
 
 
 class PostgresAuthenticationService(AuthenticationService):
@@ -20,6 +20,8 @@ class PostgresAuthenticationService(AuthenticationService):
         cursor = await self.session.execute(query)
         try:
             user = cursor.one()[0]
+            if not user.has_access:
+                raise AccessDenied
             return user.uuid, user.password
         except NoResultFound:
             raise AuthenticationError()

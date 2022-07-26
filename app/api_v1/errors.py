@@ -3,7 +3,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
 import errors
-from domain.auth.resources.authentication_service.errors import AuthenticationError
+from domain.auth.resources.authentication_service.errors import AuthenticationError, AccessDenied
 from domain.auth.resources.password_hasher.errors import InvalidPassword
 
 
@@ -14,6 +14,7 @@ def add_handlers(app: FastAPI):
     app.exception_handler(HTTPException)(_http_exception)
     app.exception_handler(AuthenticationError)(_auth_error)
     app.exception_handler(InvalidPassword)(_invalid_password)
+    app.exception_handler(AccessDenied)(_access_denied)
 
 
 async def _entity_not_founded(request: Request, exc: errors.EntityNotFounded):
@@ -94,8 +95,21 @@ async def _auth_error(request: Request, exc: AuthenticationError):
             'status': False,
             'data': {
                 'error': 'auth error',
-                'detail': 'Неверные учётные данные'
+                'detail': 'Неверные учётные данные',
             },
         },
         status_code=401,
+    )
+
+
+async def _access_denied(request: Request, exc: AccessDenied):
+    return JSONResponse(
+        content={
+            'status': False,
+            'data': {
+                'error': 'access denied',
+                'detail': 'Нет доступа в систему',
+            },
+        },
+        status_code=403,
     )

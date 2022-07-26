@@ -1,8 +1,7 @@
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Response, UploadFile
-from fastapi.responses import FileResponse
-
+import io
 from domain import user
 from . import (
     dependencies,
@@ -21,7 +20,11 @@ async def _avatar(
         find_user_photo_case: user.use_cases.find_photo.FindLastPhoto = Depends(dependencies.get__find_user_photo),
 ):
     photo = await find_user_photo_case.find(user_id)
-    return Response(content=photo, media_type='image/png')
+    return Response(
+        content=io.BytesIO(photo),
+        media_type='image/png',
+        headers={"Content-Disposition": f'attachment; filename="avatar.png"'},
+    )
 
 
 @router.put(

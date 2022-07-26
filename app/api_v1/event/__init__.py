@@ -23,6 +23,7 @@ router = APIRouter(tags=['События'], prefix='/event')
     response_model=responses.FilterEventResponse,
 )
 async def _filter(
+        student_id: typing.Optional[UUID] = None,
         client: Client = Depends(get__client),
         filter_events__case: typing.Union[
             domain.event.use_cases.filter.FilterEventsForStudent,
@@ -30,7 +31,7 @@ async def _filter(
         ] = Depends(dependencies.get__filter_events__case),
         find_user__case: domain.user.use_cases.find.FindUserInRepo = Depends(dependencies.get__find_user_in_repo),
 ):
-    events = await filter_events__case.filter(client.user_id)
+    events = await filter_events__case.filter(client.user_id, student_id=student_id)
     items = []
     for event in events.items:
         coach = await find_user__case.find(event.coach)

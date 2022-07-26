@@ -5,6 +5,7 @@ from domain.auth.resources.access_token_generator import AccessTokenGenerator
 from domain.auth.resources.refresh_token_generator import RefreshTokenGenerator
 from domain.auth.resources.password_hasher import PasswordHasher
 from domain.auth.resources.updater import TokenUpdater
+from domain.user.resources.repo import UserRepo
 from .base import AuthUser
 
 __all__ = ['AuthUserInService']

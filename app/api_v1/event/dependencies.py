@@ -16,11 +16,16 @@ async def only__student(client: Client = fastapi.Depends(get__client)):
         raise fastapi.HTTPException(403, detail='Нет доступа')
 
 
+async def only__coach_student_admin(client: Client = fastapi.Depends(get__client)):
+    if client.role not in (auth.entity.Role.COACH, auth.entity.Role.STUDENT, auth.entity.Role.ADMIN):
+        raise fastapi.HTTPException(403, detail='Нет доступа')
+
+
 async def get__filter_events__case(
         client: Client = fastapi.Depends(get__client),
         session: AsyncSession = fastapi.Depends(get__session),
 ):
-    if client.role == auth.entity.Role.COACH:
+    if client.role in (auth.entity.Role.COACH, auth.entity.Role.ADMIN):
         event_repo = event.resources.repo.PostgresEventRepo(session=session)
         return event.use_cases.filter.FilterEventsForCoach(event_repo=event_repo)
     elif client.role == auth.entity.Role.STUDENT:
