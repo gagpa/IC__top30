@@ -1,7 +1,9 @@
+from base64 import b64decode
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Response, UploadFile
-import io
+from fastapi.responses import FileResponse
+
 from domain import user
 from . import (
     dependencies,
@@ -20,8 +22,11 @@ async def _avatar(
         find_user_photo_case: user.use_cases.find_photo.FindLastPhoto = Depends(dependencies.get__find_user_photo),
 ):
     photo = await find_user_photo_case.find(user_id)
-    return Response(
-        content=photo,
+    with open(f'/tmp/{user_id}.png', 'wb') as file:
+        file.write(b64decode(photo, validate=True))
+
+    return FileResponse(
+        f'/tmp/{user_id}.png',
         media_type='image/png',
         headers={"Content-Disposition": f'attachment; filename="avatar.png"'},
     )
