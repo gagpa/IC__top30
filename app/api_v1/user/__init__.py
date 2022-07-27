@@ -26,12 +26,11 @@ async def _avatar(
         prefix_rim = photo.decode('utf-8').find('base64,')
         if prefix_rim:
             photo = photo[prefix_rim + 7:]
-        print(b64decode(photo))
         file.write(b64decode(photo))
     return FileResponse(
         f'/tmp/{user_id}.png',
         media_type='image/png',
-        # headers={"Content-Disposition": f'attachment; filename="avatar.png"'},
+        headers={"Content-Disposition": f'attachment; filename="avatar.png"'},
     )
 
 
