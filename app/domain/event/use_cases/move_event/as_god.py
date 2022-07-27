@@ -21,25 +21,20 @@ class MoveEventAsGod(MoveEvent):
         event = await self.event_repo.find(event_id=event_id)
         event_duration = event.end_date - event.start_date
         student = await self.student_repo.find(event.student)
-        available_slots = await self.slot_repo.filter(
-            start_date=new_start_date,
-            end_date=new_start_date + event_duration,
-            coach_id=student.coach_id,
-            student_id=None,
-            is_free=True,
-        )
         requirement_slots_count = abs(int(event_duration.seconds / 60 / 60))
-        print(len(available_slots.items), requirement_slots_count)
-        if len(available_slots.items) < requirement_slots_count:
-            for i in range(requirement_slots_count):
-                start_date = new_start_date + timedelta(hours=i)
-                try:
-                    await self.slot_repo.add(
-                        student.coach_id,
-                        start_date=start_date,
-                        end_date=start_date + timedelta(hours=1),
-                    )
-                except errors.EntityAlreadyExist:
-                    print(f'Slot exist - {start_date}')
-                    continue
+        for i in range(requirement_slots_count):
+            start_date = new_start_date + timedelta(hours=i)
+            available_slot = await self.slot_repo.filter(
+                start_date=start_date,
+                end_date=None,
+                coach_id=student.coach_id,
+                student_id=None,
+                is_free=True,
+            )
+            if not available_slot.items:
+                await self.slot_repo.add(
+                    student.coach_id,
+                    start_date=start_date,
+                    end_date=start_date + timedelta(hours=1),
+                )
         return await self.event_mover.move(event_id=event.id, new_start_date=new_start_date)
