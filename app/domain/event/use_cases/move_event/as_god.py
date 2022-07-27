@@ -19,7 +19,7 @@ class MoveEventAsGod(MoveEvent):
 
     async def move(self, event_id: UUID, new_start_date: datetime) -> EventEntity:
         event = await self.event_repo.find(event_id=event_id)
-        event_duration = event.start_date - event.end_date
+        event_duration = event.end_date - event.start_date
         student = await self.student_repo.find(event.student)
         available_slots = await self.slot_repo.filter(
             start_date=new_start_date,
@@ -29,9 +29,10 @@ class MoveEventAsGod(MoveEvent):
             is_free=True,
         )
         requirement_slots_count = abs(int(event_duration.seconds / 60 / 60))
+        print(event_duration.seconds)
         print(requirement_slots_count)
         print(len(available_slots.items))
-        if len(available_slots.items) < requirement_slots_count:
+        if len(available_slots.items) == requirement_slots_count:
             for i in range(requirement_slots_count):
                 start_date = new_start_date + timedelta(hours=i)
                 try:
