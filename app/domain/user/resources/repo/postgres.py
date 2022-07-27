@@ -59,9 +59,10 @@ class PostgresUserRepo(UserRepo):
     async def find(self, id: UUID) -> UserEntity:
         query = select(models.User).where(models.User.uuid == id)
         cursor = await self.session.execute(query)
-        user_from_db = cursor.one_or_none()[0]
+        user_from_db = cursor.one_or_none()
         if not user_from_db:
             raise errors.EntityNotFounded()
+        user_from_db = user_from_db[0]
         return UserEntity(
             id=user_from_db.uuid,
             first_name=user_from_db.first_name,
