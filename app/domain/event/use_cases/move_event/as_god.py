@@ -24,6 +24,7 @@ class MoveEventAsGod(MoveEvent):
         requirement_slots_count = abs(int(event_duration.seconds / 60 / 60))
         for i in range(requirement_slots_count):
             start_date = new_start_date + timedelta(hours=i)
+            print(start_date)
             available_slot = await self.slot_repo.filter(
                 start_date=start_date,
                 end_date=None,
