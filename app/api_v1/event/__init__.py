@@ -19,7 +19,7 @@ router = APIRouter(tags=['События'], prefix='/event')
 
 @router.get(
     '',
-    dependencies=[Depends(dependencies.only__coach_student)],
+    dependencies=[Depends(dependencies.only__coach_student_admin)],
     response_model=responses.FilterEventResponse,
 )
 async def _filter(
