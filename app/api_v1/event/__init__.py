@@ -121,7 +121,6 @@ async def _move(
         find_user__case: domain.user.use_cases.find.FindUserInRepo = Depends(dependencies.get__find_user_in_repo),
 ):
     event = await move_event__case.move(
-        student_id=client.user_id,
         event_id=_id,
         new_start_date=datetime.fromtimestamp(int(new_start_date) / 1000),
     )

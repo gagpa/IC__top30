@@ -2,7 +2,7 @@ import fastapi
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api_v1.base.dependencies import get__session
-from domain import admin, coach, student, event, user
+from domain import admin, coach, student, event, user, slot
 
 
 async def get__delete_coach_from_repo(session: AsyncSession = fastapi.Depends(get__session)):
@@ -23,7 +23,14 @@ async def get__add_admin(session: AsyncSession = fastapi.Depends(get__session)):
 async def get__move_event_case(session: AsyncSession = fastapi.Depends(get__session)):
     event_repo = event.resources.repo.PostgresEventRepo(session=session)
     event_mover = event.resources.mover.PostgresEventMover(session=session)
-    return event.use_cases.move_event.MoveEventAsGod(event_mover=event_mover, event_repo=event_repo)
+    student_repo = student.resources.student_repo.PostgresStudentRepo(session=session)
+    slot_repo = slot.resources.repo.PostrgesSlotRepo(session=session)
+    return event.use_cases.move_event.MoveEventAsGod(
+        event_mover=event_mover,
+        event_repo=event_repo,
+        student_repo=student_repo,
+        slot_repo=slot_repo,
+    )
 
 
 async def get__find_user_in_repo(session: AsyncSession = fastapi.Depends(get__session)):

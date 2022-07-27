@@ -43,9 +43,8 @@ async def _move_event(
         Depends(dependencies.get__move_event_case),
         find_user__case: domain.user.use_cases.find.FindUserInRepo = Depends(dependencies.get__find_user_in_repo),
 ):
-    new_start_date = datetime.now() - timedelta(hours=int(offset))
+    new_start_date = datetime.now() + timedelta(hours=int(offset))
     event = await move_event__case.move(
-        student_id=client.user_id,
         event_id=_id,
         new_start_date=new_start_date,
     )

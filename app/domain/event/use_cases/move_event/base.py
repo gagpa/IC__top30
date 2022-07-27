@@ -8,5 +8,5 @@ from domain.event.entity import EventEntity
 class MoveEvent(ABC):
 
     @abstractmethod
-    async def move(self, student_id: UUID, event_id: UUID, new_start_date: datetime) -> EventEntity:
+    async def move(self, event_id: UUID, new_start_date: datetime) -> EventEntity:
         """Передвинуть эвент"""
