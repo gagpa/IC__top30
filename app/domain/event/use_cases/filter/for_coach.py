@@ -12,6 +12,12 @@ class FilterEventsForCoach(FilterEvents):
         self.event_repo = event_repo
 
     async def filter(self, user_id: UUID, student_id: typing.Optional[UUID], page: int = 0) -> ListEventEntity:
+        if student_id:  # TODO: Реализовано для админа, нужна отдельная реализация поиска эвентов
+            return await self.event_repo.filter(
+                coach_id=None,
+                student_id=student_id,
+                page=page,
+            )
         return await self.event_repo.filter(
             coach_id=user_id,
             student_id=student_id,
