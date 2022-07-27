@@ -39,5 +39,6 @@ class MoveEventAsGod(MoveEvent):
                         end_date=start_date + timedelta(hours=1),
                     )
                 except errors.EntityAlreadyExist:
+                    print(f'Slot exist - {start_date}')
                     continue
         return await self.event_mover.move(event_id=event.id, new_start_date=new_start_date)
