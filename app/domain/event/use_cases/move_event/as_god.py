@@ -31,6 +31,7 @@ class MoveEventAsGod(MoveEvent):
                 student_id=None,
                 is_free=True,
             )
+            print(available_slot.items)
             if not available_slot.items:
                 await self.slot_repo.add(
                     student.coach_id,
