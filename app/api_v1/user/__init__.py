@@ -25,7 +25,7 @@ async def _avatar(
     with open(f'/tmp/{user_id}.png', 'wb') as file:
         prefix_rim = photo.decode('utf-8').find('base64,')
         if prefix_rim:
-            photo = photo[:prefix_rim + 7]
+            photo = photo[prefix_rim + 8:]
         file.write(b64decode(photo))
         print(b64decode(photo))
     return FileResponse(
