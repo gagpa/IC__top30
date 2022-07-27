@@ -23,7 +23,7 @@ async def _avatar(
 ):
     photo = await find_user_photo_case.find(user_id)
     with open(f'/tmp/{user_id}.png', 'wb') as file:
-        file.write(b64decode(photo, validate=True))
+        file.write(photo)
 
     return FileResponse(
         f'/tmp/{user_id}.png',
