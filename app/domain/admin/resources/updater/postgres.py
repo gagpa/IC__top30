@@ -35,7 +35,6 @@ class PostgresAdminUpdater(AdminUpdater):
             user_update_obj['patronymic'] = patronymic
         if phone:
             user_update_obj['phone'] = phone
-        print(photo)
         if isinstance(photo, bytes):
             user_subquery = select(models.User.id).where(models.User.uuid == admin_id).subquery()
             delete_photo_query = delete(models.Photo).where(models.Photo.user_id == user_subquery)
