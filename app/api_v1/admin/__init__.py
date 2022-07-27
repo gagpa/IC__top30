@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from uuid import UUID
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response, status
 
 import domain
 from api_v1.base.client_requests import Client
@@ -33,40 +33,17 @@ async def _get_admin(
 
 @router.patch(
     '/event/{_id}',
-    status_code=204,
+    status_code=status.HTTP_204_NO_CONTENT,
+    response_class=Response,
 )
 async def _move_event(
         _id: UUID,
         offset: int,
-        client: Client = Depends(get__client),
         move_event__case: domain.event.use_cases.move_event.MoveEventAsGod =
         Depends(dependencies.get__move_event_case),
-        find_user__case: domain.user.use_cases.find.FindUserInRepo = Depends(dependencies.get__find_user_in_repo),
 ):
     new_start_date = datetime.now() + timedelta(hours=int(offset))
-    event = await move_event__case.move(
+    await move_event__case.move(
         event_id=_id,
         new_start_date=new_start_date,
-    )
-    coach = await find_user__case.find(event.coach)
-    student = await find_user__case.find(event.student)
-    return responses.FindEventResponse(
-        data=responses.Event(
-            id=event.id,
-            start=int(round(event.start_date.timestamp())) * 1000,
-            end=int(round(event.end_date.timestamp())) * 1000,
-            student=responses.Student(
-                id=event.student,
-                first_name=student.first_name,
-                last_name=student.last_name,
-                patronymic=student.patronymic,
-            ),
-            coach=responses.Coach(
-                id=event.coach,
-                first_name=coach.first_name,
-                last_name=coach.last_name,
-                patronymic=coach.patronymic,
-            ),
-            status=event.status,
-        ),
     )
