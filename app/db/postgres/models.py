@@ -121,7 +121,7 @@ class Event(Base):
     id = sql.Column(sql.Integer, primary_key=True)
     uuid = sql.Column(UUID_field(as_uuid=True), nullable=False, default=uuid4)
     status = sql.Column(sql.Enum(EventStatus), nullable=False)
-    student_id = sql.Column(sql.Integer, sql.ForeignKey('students.id', ondelete='CASCADE'), unique=True, nullable=False)
+    student_id = sql.Column(sql.Integer, sql.ForeignKey('students.id', ondelete='CASCADE'), nullable=False)
 
     student = relationship('Student', back_populates='events')
     slots = relationship(
