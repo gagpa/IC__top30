@@ -27,7 +27,7 @@ async def _avatar(
         if prefix_rim:
             photo = photo[:prefix_rim + 7]
         file.write(b64decode(photo))
-
+        print(b64decode(photo))
     return FileResponse(
         f'/tmp/{user_id}.png',
         media_type='image/png',
