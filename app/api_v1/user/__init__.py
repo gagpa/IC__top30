@@ -31,7 +31,7 @@ async def _avatar(
     return FileResponse(
         f'/tmp/{user_id}.png',
         media_type='image/png',
-        headers={"Content-Disposition": f'attachment; filename="avatar.png"'},
+        # headers={"Content-Disposition": f'attachment; filename="avatar.png"'},
     )
 
 
