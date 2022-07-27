@@ -29,10 +29,7 @@ class MoveEventAsGod(MoveEvent):
             is_free=True,
         )
         requirement_slots_count = abs(int(event_duration.seconds / 60 / 60))
-        print(event_duration.seconds)
-        print(requirement_slots_count)
-        print(len(available_slots.items))
-        if len(available_slots.items) == requirement_slots_count:
+        if len(available_slots.items) < requirement_slots_count:
             for i in range(requirement_slots_count):
                 start_date = new_start_date + timedelta(hours=i)
                 try:
