@@ -31,10 +31,6 @@ class PostgresUserRepo(UserRepo):
         cursor = await self.session.execute(query)
         if cursor.one_or_none():
             raise errors.EntityAlreadyExist()
-        if photo:
-            new_photo = models.Photo(img=photo)
-        else:
-            new_photo = None
         new_user = models.User(
             password=password,
             first_name=first_name,
@@ -42,10 +38,12 @@ class PostgresUserRepo(UserRepo):
             patronymic=patronymic,
             phone=phone,
             email=email,
-            photo=new_photo,
         )
         self.session.add(new_user)
         await self.session.flush()
+        if photo:
+            insert_photo_query = insert(models.Photo).values(img=photo, user_id=new_user.id)
+            await self.session.execute(insert_photo_query)
         return UserEntity(
             id=new_user.uuid,
             first_name=new_user.first_name,
