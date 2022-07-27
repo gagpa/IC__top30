@@ -63,6 +63,7 @@ async def _list(
                 phone=user.phone,
                 patronymic=user.patronymic,
                 students_ids=[],
+                photo=f'https://top30mt.ru/api/v1/user/{user.id}/avatar',
             ) if isinstance(data, domain.coach.entity.CoachEntity) else
             responses.UserStudent(
                 id=user.id,
@@ -75,6 +76,7 @@ async def _list(
                 experience=data.experience,
                 supervisor=data.supervisor,
                 patronymic=user.patronymic,
+                photo=f'https://top30mt.ru/api/v1/user/{user.id}/avatar',
             )
             for user, data in zip(users, all_requests)
         ],
