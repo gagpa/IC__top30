@@ -61,21 +61,10 @@ class JWTBearer(HTTPBearer):
         return decoded_token if decoded_token['exp'] >= time.time() else None
 
 
-async def get__base_client(
+async def get__client(
         token: dict = Depends(JWTBearer(secret_key=settings.AppSettings().SECRET_KEY)),
 ):
     return client_requests.Client(
         user_id=UUID(token['user_id']),
         role=domain.auth.entity.Role(token['role']),
     )
-
-
-async def get__client(
-        client: client_requests.Client = Depends(get__base_client),
-        session: AsyncSession = Depends(get__session),
-):
-    user_repo = domain.user.resources.repo.PostgresUserRepo(session=session)
-    user = await domain.user.use_cases.find.FindUserInRepo(user_repo=user_repo).find(client.user_id)
-    if not user.has_access:
-        raise HTTPException(403, detail='Нет доступа')
-    return client
