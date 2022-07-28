@@ -114,7 +114,7 @@ class PostgresEventRepo(EventRepo):
             order_by(
             min_date__alias,
             max_date__alias,
-        ).group_by(models.Event.id, student_user__alias)
+        ).group_by(models.Event.id, student_user__alias, coach_user__alias)
         if coach_id:
             subquery_students_id_of_coach = sql.select(models.Student.id). \
                 join(models.Coach, models.Student.coach_id == models.Coach.id). \
