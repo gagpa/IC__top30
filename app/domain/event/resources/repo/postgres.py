@@ -104,6 +104,8 @@ class PostgresEventRepo(EventRepo):
             student_user__alias.uuid,
             coach_user__alias.uuid,
         ). \
+            join(models.pivot__slots_events, models.pivot__slots_events.c.event_id == models.Event.id). \
+            join(models.Slot, models.Slot.id == models.pivot__slots_events.c.slot_id). \
             join(models.Student, models.Event.student_id == models.Student.id). \
             join(student_user__alias, student_user__alias.id == models.Student.user_id). \
             join(models.Coach, models.Coach.id == models.Student.coach_id). \
