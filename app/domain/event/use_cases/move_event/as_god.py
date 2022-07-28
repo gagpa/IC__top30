@@ -31,7 +31,7 @@ class MoveEventAsGod(MoveEvent):
                 student_id=None,
                 is_free=True,
             )
-            print([str(slot.start_date) for slot in available_slot.items])
+            print('AVAILABLE SLOTS', [str(slot.start_date) for slot in available_slot.items])
             if not available_slot.items:
                 print(f'START: {start_date}')
                 print(f'END: {start_date + timedelta(hours=1)}')
