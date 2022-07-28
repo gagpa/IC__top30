@@ -95,7 +95,7 @@ class PostgresEventRepo(EventRepo):
         coach_user__alias = aliased(models.User)
         student_user__alias = aliased(models.User)
         min_date__alias = sql.func.min(models.Slot.start_date)
-        max_date__alias = sql.func.max(models.Slot.start_date)
+        max_date__alias = sql.func.max(models.Slot.end_date)
 
         query = sql.select(
             models.Event,
