@@ -39,5 +39,4 @@ class MoveEventAsGod(MoveEvent):
                     start_date=start_date,
                     end_date=start_date + timedelta(hours=1),
                 )
-        await self.slot_repo.session.commit()
         return await self.event_mover.move(event_id=event.id, new_start_date=new_start_date)
