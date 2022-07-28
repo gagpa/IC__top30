@@ -18,12 +18,14 @@ class PostrgesSlotRepo(SlotRepo):
         self.session = session
 
     async def add(self, coach_id: UUID, start_date: datetime, end_date: datetime) -> SlotEntity:
+
         subquery_coach_id = sql.select(models.Coach.id).join(models.User).where(models.User.uuid == coach_id).subquery()
         check_query = sql.select(models.Slot).where(  # TODO: Поменять запрос на пересечение дат
             models.Slot.coach_id == subquery_coach_id,
             models.Slot.start_date == start_date,
         )
         cursor = await self.session.execute(check_query)
+        print('')
         if cursor.one_or_none():
             print(f'SLOT: {start_date} EXIST')
             return
