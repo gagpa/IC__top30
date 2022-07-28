@@ -74,6 +74,7 @@ class PostrgesSlotRepo(SlotRepo):
         query = sql.select(models.Slot, models.User.uuid).join(models.Coach, models.Slot.coach_id == models.Coach.id). \
             join(models.User, models.User.id == models.Coach.user_id)
         if start_date:
+            print(f'FILTER SLOT {start_date}')
             query = query.where(models.Slot.start_date == start_date)
         if end_date:
             query = query.where(models.Slot.end_date == end_date)
