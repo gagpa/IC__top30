@@ -36,3 +36,8 @@ async def get__move_event_case(session: AsyncSession = fastapi.Depends(get__sess
 async def get__find_user_in_repo(session: AsyncSession = fastapi.Depends(get__session)):
     user_repo = user.resources.repo.PostgresUserRepo(session)
     return user.use_cases.find.FindUserInRepo(user_repo=user_repo)
+
+
+async def get__find_event_in_repo(session: AsyncSession = fastapi.Depends(get__session)):
+    event_repo = event.resources.repo.PostgresEventRepo(session)
+    return event.use_cases.find.FindEventInRepo(event_repo=event_repo)
