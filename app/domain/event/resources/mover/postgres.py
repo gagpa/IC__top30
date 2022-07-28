@@ -42,6 +42,8 @@ class PostgresEventMover(EventMover):
             sql.select(models.Event).where(models.Event.uuid == event_id).options(selectinload(models.Event.slots))
         )
         event = cursor.one()[0]
+        print(event.slots)
+        print(new_slots_for_event)
         event.slots = new_slots_for_event
         self.session.add(event)
         start = min([slot.start_date for slot in new_slots_for_event])
