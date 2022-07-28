@@ -46,8 +46,8 @@ class PostgresEventRepo(EventRepo):
         student_user__alias = aliased(models.User)
         coach_query = sql.select(coach_user__alias.uuid). \
             join(models.Coach, models.Coach.user_id == coach_user__alias.id). \
-            join(models.Student, models.Student.coach_id == models.Coach.id).\
-            join(student_user__alias, student_user__alias.id == models.Student.user_id).\
+            join(models.Student, models.Student.coach_id == models.Coach.id). \
+            join(student_user__alias, student_user__alias.id == models.Student.user_id). \
             where(student_user__alias.uuid == student_id)
         cursor = await self.session.execute(coach_query)
         return EventEntity(
@@ -94,12 +94,25 @@ class PostgresEventRepo(EventRepo):
     ) -> ListEventEntity:
         coach_user__alias = aliased(models.User)
         student_user__alias = aliased(models.User)
-        query = sql.select(models.Event, student_user__alias.uuid, coach_user__alias.uuid). \
+        min_date__alias = aliased(sql.func.min(models.Slot.start_date))
+        max_date__alias = aliased(sql.func.max(models.Slot.start_date))
+
+        query = sql.select(
+            models.Event,
+            min_date__alias,
+            max_date__alias,
+            student_user__alias.uuid,
+            coach_user__alias.uuid,
+        ). \
             join(models.Student, models.Event.student_id == models.Student.id). \
             join(student_user__alias, student_user__alias.id == models.Student.user_id). \
             join(models.Coach, models.Coach.id == models.Student.coach_id). \
             join(coach_user__alias, coach_user__alias.id == models.Coach.user_id). \
-            options(selectinload(models.Event.slots))
+            options(selectinload(models.Event.slots)). \
+            order_by(
+            min_date__alias,
+            max_date__alias,
+        )
         if coach_id:
             subquery_students_id_of_coach = sql.select(models.Student.id). \
                 join(models.Coach, models.Student.coach_id == models.Coach.id). \
