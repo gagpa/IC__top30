@@ -50,6 +50,7 @@ class PostrgesSlotRepo(SlotRepo):
             slot_from_db: models.Slot = cursor.one()
         except NoResultFound:
             raise errors.EntityNotFounded()
+        await self.session.flush()
         return SlotEntity(
             id=slot_from_db[0].uuid,
             start_date=slot_from_db[0].start_date,
