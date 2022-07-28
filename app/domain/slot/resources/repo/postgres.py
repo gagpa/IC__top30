@@ -27,6 +27,7 @@ class PostrgesSlotRepo(SlotRepo):
         if cursor.one_or_none():
             print(f'SLOT: {start_date} EXIST')
             return
+        print(f'SLOT: {start_date} TRY CREATE')
         insert_query = sql.insert(models.Slot).values(
             coach_id=subquery_coach_id,
             start_date=start_date,
