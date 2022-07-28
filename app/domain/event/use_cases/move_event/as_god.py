@@ -24,7 +24,6 @@ class MoveEventAsGod(MoveEvent):
         requirement_slots_count = abs(int(event_duration.seconds / 60 / 60))
         for i in range(requirement_slots_count):
             start_date = new_start_date + timedelta(hours=i)
-            print(start_date)
             available_slot = await self.slot_repo.filter(
                 start_date=start_date,
                 end_date=None,
@@ -32,8 +31,8 @@ class MoveEventAsGod(MoveEvent):
                 student_id=None,
                 is_free=True,
             )
-            print(available_slot.items)
             if not available_slot.items:
+                print(start_date + timedelta(hours=1))
                 await self.slot_repo.add(
                     student.coach_id,
                     start_date=start_date,

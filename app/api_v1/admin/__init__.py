@@ -43,7 +43,6 @@ async def _move_event(
         Depends(dependencies.get__move_event_case),
 ):
     new_start_date = datetime.now() + timedelta(hours=int(offset))
-    print(new_start_date, new_start_date.replace(minute=0, second=0, microsecond=0))
     await move_event__case.move(
         event_id=_id,
         new_start_date=new_start_date.replace(minute=0, second=0, microsecond=0),
