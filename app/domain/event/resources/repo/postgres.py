@@ -99,10 +99,10 @@ class PostgresEventRepo(EventRepo):
 
         query = sql.select(
             models.Event,
-            min_date__alias,
-            max_date__alias,
             student_user__alias.uuid,
             coach_user__alias.uuid,
+            min_date__alias,
+            max_date__alias,
         ). \
             join(models.pivot__slots_events, models.pivot__slots_events.c.event_id == models.Event.id). \
             join(models.Slot, models.Slot.id == models.pivot__slots_events.c.slot_id). \
@@ -134,8 +134,8 @@ class PostgresEventRepo(EventRepo):
                     status=data[0].status,
                     student=data[1],
                     coach=data[2],
-                    start_date=min([slot.start_date for slot in data[0].slots]),
-                    end_date=max([slot.end_date for slot in data[0].slots]),
+                    start_date=data[3],
+                    end_date=data[4],
                 )
                 for data in cursor.all()
             ],
