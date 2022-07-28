@@ -32,7 +32,8 @@ class MoveEventAsGod(MoveEvent):
                 is_free=True,
             )
             if not available_slot.items:
-                print(start_date + timedelta(hours=1))
+                print(f'START: {start_date}')
+                print(f'END: {start_date + timedelta(hours=1)}')
                 await self.slot_repo.add(
                     student.coach_id,
                     start_date=start_date,
