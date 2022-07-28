@@ -35,7 +35,6 @@ class PostgresEventMover(EventMover):
         )
         cursor = await self.session.execute(query__possible_slots)
         possible_slots = cursor.all()
-        print(len(possible_slots), len(slots), slots)
         if len(possible_slots) < len(slots):
             raise errors.EntityAlreadyExist
         new_slots_for_event = [slot[0] for slot in possible_slots[:len(slots)]]
@@ -43,8 +42,9 @@ class PostgresEventMover(EventMover):
             sql.select(models.Event).where(models.Event.uuid == event_id).options(selectinload(models.Event.slots))
         )
         event = cursor.one()[0]
-        print(event.slots)
-        print(new_slots_for_event)
+        print(new_start_date)
+        print(event.slots[0].start_date)
+        print(new_slots_for_event[0].start_date)
         event.slots = new_slots_for_event
         self.session.add(event)
         start = min([slot.start_date for slot in new_slots_for_event])
