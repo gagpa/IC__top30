@@ -35,11 +35,6 @@ class SoftRefusePersonalStudent(RefusePersonalStudent):
         print(events)
         for event in events.items:
             time_for_event = event.start_date - datetime.now()
-            print(event.start_date)
-            print(datetime.now())
-            print(time_for_event)
-            print(time_for_event != abs(time_for_event))
-            print(time_for_event < timedelta(hours=24))
             if time_for_event != abs(time_for_event):
                 return
             if time_for_event < timedelta(hours=24):
