@@ -23,7 +23,7 @@ class PostgresEventMover(EventMover):
         if len(new_slots_for_event) < event_size:
             raise errors.EntityAlreadyExist()
         try:
-            event = self.__select__event(event_id)
+            event = await self.__select__event(event_id)
         except NoResultFound:
             raise errors.EntityNotFounded()
         event.slots = new_slots_for_event
