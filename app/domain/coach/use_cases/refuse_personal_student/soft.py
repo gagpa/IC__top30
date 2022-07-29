@@ -32,6 +32,7 @@ class SoftRefusePersonalStudent(RefusePersonalStudent):
     async def refuse(self, student_id: UUID):
         student = await self.student_repo.find(student_id)
         events = await self.event_repo.filter(student_id=student_id, coach_id=None)
+        print(events)
         for event in events.items:
             time_for_event = event.start_date - datetime.now()
             print(event.start_date)
