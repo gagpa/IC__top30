@@ -32,8 +32,14 @@ class PostgresEventRepo(EventRepo):
         if cursor.one_or_none():
             raise errors.EntityAlreadyExist
         print(str(start_date), str(end_date))
+        subquery__coach_id = sql.select(models.Coach.id). \
+            join(models.Student, models.Student.coach_id == models.Coach.id). \
+            join(models.User, models.Student.user_id == models.User.id). \
+            where(models.User.uuid == student_id). \
+            subquery()
         query__slots = sql.select(models.Slot).where(
             models.Slot.start_date.between(start_date, end_date),
+            models.Slot.coach_id == subquery__coach_id,
         )
         cursor = await self.session.execute(query__slots)
         slots = [slot[0] for slot in cursor.all()]
