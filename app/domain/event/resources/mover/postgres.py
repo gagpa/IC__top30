@@ -23,7 +23,7 @@ class PostgresEventMover(EventMover):
             where(models.Event.uuid == event_id)
         cursor = await self.session.execute(query__slots)
         slots = cursor.all()
-        print([f'{slot[0].id - slot[1]}' for slot in slots])
+        print(slots)
         event_size = len(slots)
         subquery__coach_id = sql.select(models.Student.coach_id). \
             join(models.Event). \
