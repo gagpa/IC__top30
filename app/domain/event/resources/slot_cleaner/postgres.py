@@ -18,3 +18,7 @@ class PostgresSlotCleaner(SlotCleaner):
         query = sql.delete(models.pivot__slots_events). \
             where(models.pivot__slots_events.c.event_id == event_id__subquery)
         await self.session.execute(query, execution_options=immutabledict({'synchronize_session': 'fetch'}))
+
+        test_query = sql.select(models.Event.id).where(models.Event.uuid == event_id).subquery()
+        cursor = await self.session.execute(test_query)
+        print(cursor.scalar())
