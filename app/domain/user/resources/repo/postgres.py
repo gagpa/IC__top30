@@ -59,10 +59,11 @@ class PostgresUserRepo(UserRepo):
         query = select(models.User, models.Photo.id).join(models.Photo).where(models.User.uuid == id)
         cursor = await self.session.execute(query)
         user_from_db = cursor.one_or_none()
+        print(user_from_db)
         if not user_from_db:
             raise errors.EntityNotFounded()
         user_from_db = user_from_db[0]
-        has_photo = bool(user_from_db[-1])
+        has_photo = bool(user_from_db[1])
         return UserEntity(
             id=user_from_db.uuid,
             first_name=user_from_db.first_name,
