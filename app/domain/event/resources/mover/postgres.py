@@ -17,7 +17,7 @@ class PostgresEventMover(EventMover):
         self.session = session
 
     async def move(self, event_id: UUID, new_start_date: datetime) -> EventEntity:
-        query__event_size = sql.select(sql.func.count(models.Slot)). \
+        query__event_size = sql.select(sql.func.count(models.Slot.id)). \
             join(models.pivot__slots_events, models.pivot__slots_events.c.slot_id == models.Slot.id). \
             join(models.Event, models.Event.id == models.pivot__slots_events.c.event_id). \
             where(models.Event.uuid == event_id)
