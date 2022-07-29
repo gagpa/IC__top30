@@ -67,20 +67,20 @@ class PostgresEventMover(EventMover):
         cursor = await self.session.execute(query)
         return cursor.one()[0]
 
-    async def __select__coach_id(self, slot: models.Slot) -> UUID:
+    async def __select__coach_id(self, slot) -> UUID:
         cursor = await self.session.execute(
             sql.select(models.User.uuid).join(models.Coach).where(models.Coach.id == slot.coach_id)
         )
         return cursor.scalar()
 
-    async def __select__student_id(self, event: models.Event) -> UUID:
+    async def __select__student_id(self, event) -> UUID:
         cursor = await self.session.execute(
             sql.select(models.User.uuid).join(models.Student).where(models.Student.id == event.student_id)
         )
         return cursor.scalar()
 
-    async def __calculate__start_date(self, slots: typing.List[models.Slot]) -> datetime:
+    async def __calculate__start_date(self, slots: list) -> datetime:
         return min([slot.start_date for slot in slots])
 
-    async def __calculate__end_date(self, slots: typing.List[models.Slot]) -> datetime:
+    async def __calculate__end_date(self, slots: list) -> datetime:
         return max([slot.end_date for slot in slots])
