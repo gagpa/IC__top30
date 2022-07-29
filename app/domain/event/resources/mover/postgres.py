@@ -1,4 +1,3 @@
-import typing
 from datetime import datetime
 from uuid import UUID
 
@@ -58,10 +57,8 @@ class PostgresEventMover(EventMover):
             models.Slot.start_date >= new_start_date,
         ).order_by(models.Slot.start_date).limit(event_size)
         cursor = await self.session.execute(query)
-        slots = cursor.scalar()
-        if isinstance(slots, list):
-            return slots
-        return [slots]
+        result = cursor.all()
+        return [row[0] for row in result]
 
     async def __select__event(self, event_id: UUID):
         query = sql.select(models.Event). \
