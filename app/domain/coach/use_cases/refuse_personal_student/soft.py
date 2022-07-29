@@ -34,6 +34,8 @@ class SoftRefusePersonalStudent(RefusePersonalStudent):
         events = await self.event_repo.filter(student_id=student_id, coach_id=None)
         for event in events.items:
             time_for_event = event.start_date - datetime.now()
+            print(event.start_date)
+            print(datetime.now())
             print(time_for_event)
             print(time_for_event != abs(time_for_event))
             print(time_for_event < timedelta(hours=24))
