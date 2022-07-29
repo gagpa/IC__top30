@@ -52,15 +52,17 @@ class PostgresUserRepo(UserRepo):
             phone=new_user.phone,
             email=pydantic.EmailStr(new_user.email),
             has_access=new_user.has_access,
+            has_photo=bool(photo),
         )
 
     async def find(self, id: UUID) -> UserEntity:
-        query = select(models.User).where(models.User.uuid == id)
+        query = select(models.User, models.Photo.id).join(models.Photo).where(models.User.uuid == id)
         cursor = await self.session.execute(query)
         user_from_db = cursor.one_or_none()
         if not user_from_db:
             raise errors.EntityNotFounded()
         user_from_db = user_from_db[0]
+        has_photo = bool(user_from_db[-1])
         return UserEntity(
             id=user_from_db.uuid,
             first_name=user_from_db.first_name,
@@ -69,10 +71,11 @@ class PostgresUserRepo(UserRepo):
             phone=user_from_db.phone,
             email=pydantic.EmailStr(user_from_db.email),
             has_access=user_from_db.has_access,
+            has_photo=has_photo,
         )
 
     async def filter(self, page: int = 0) -> ListUserEntity:
-        query = select(models.User)
+        query = select(models.User, models.Photo.id)
         query = query.limit(self.limit).offset((page + 1) * self.limit)
         cursor = await self.session.execute(query)
         return ListUserEntity(
@@ -80,14 +83,15 @@ class PostgresUserRepo(UserRepo):
             total=1,
             items=[
                 UserEntity(
-                    id=user_from_db.uuid,
-                    first_name=user_from_db.first_name,
-                    last_name=user_from_db.last_name,
-                    patronymic=user_from_db.patronymic,
-                    phone=user_from_db.phone,
-                    email=pydantic.EmailStr(user_from_db.email),
-                    has_access=user_from_db.has_access,
+                    id=user_from_db[0].uuid,
+                    first_name=user_from_db[0].first_name,
+                    last_name=user_from_db[0].last_name,
+                    patronymic=user_from_db[0].patronymic,
+                    phone=user_from_db[0].phone,
+                    email=pydantic.EmailStr(user_from_db[0].email),
+                    has_access=user_from_db[0].has_access,
+                    has_photo=bool(user_from_db[1]),
                 )
-                for user_from_db in cursor.scalars()
+                for user_from_db in cursor.all()
             ]
         )

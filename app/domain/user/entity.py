@@ -24,6 +24,7 @@ class UserEntity(BaseEntity):
     )
     coach_id: typing.Optional[UUID] = None
     has_access: bool
+    has_photo: bool
 
 
 ListUserEntity = PaginatedList[UserEntity]

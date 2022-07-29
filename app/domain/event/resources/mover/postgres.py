@@ -1,4 +1,3 @@
-import typing
 from datetime import datetime
 from uuid import UUID
 
@@ -8,8 +7,8 @@ from sqlalchemy.orm import selectinload
 
 import errors
 from db.postgres import models
-from .base import EventMover
 from domain.event.entity import EventEntity
+from .base import EventMover
 
 
 class PostgresEventMover(EventMover):
