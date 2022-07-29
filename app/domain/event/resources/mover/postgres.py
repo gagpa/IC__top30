@@ -17,13 +17,13 @@ class PostgresEventMover(EventMover):
         self.session = session
 
     async def move(self, event_id: UUID, new_start_date: datetime) -> EventEntity:
-        query__slots = sql.select(models.Slot). \
+        query__slots = sql.select(models.Slot, models.Event.uuid). \
             join(models.pivot__slots_events, models.pivot__slots_events.c.slot_id == models.Slot.id). \
             join(models.Event, models.Event.id == models.pivot__slots_events.c.event_id). \
             where(models.Event.uuid == event_id).group_by(models.Slot.id)
         cursor = await self.session.execute(query__slots)
         slots = cursor.all()
-        print([f'{slot[0].id}' for slot in slots])
+        print([f'{slot[0].id - slot[1]}' for slot in slots])
         event_size = len(slots)
         subquery__coach_id = sql.select(models.Student.coach_id). \
             join(models.Event). \
