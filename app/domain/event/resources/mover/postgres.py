@@ -17,14 +17,12 @@ class PostgresEventMover(EventMover):
         self.session = session
 
     async def move(self, event_id: UUID, new_start_date: datetime) -> EventEntity:
-        query__slots = sql.select(models.Slot, models.Event.uuid). \
+        query__event_size = sql.select(sql.func.count(models.Slot)). \
             join(models.pivot__slots_events, models.pivot__slots_events.c.slot_id == models.Slot.id). \
             join(models.Event, models.Event.id == models.pivot__slots_events.c.event_id). \
             where(models.Event.uuid == event_id)
-        cursor = await self.session.execute(query__slots)
-        slots = cursor.all()
-        print([slot[1] for slot in slots])
-        event_size = len(slots)
+        cursor = await self.session.execute(query__event_size)
+        event_size = cursor.scalar()
         subquery__coach_id = sql.select(models.Student.coach_id). \
             join(models.Event). \
             where(models.Event.uuid == event_id). \
@@ -38,10 +36,7 @@ class PostgresEventMover(EventMover):
         possible_slots = cursor.all()
         if len(possible_slots) < event_size:
             raise errors.EntityAlreadyExist
-        print(possible_slots)
-        print(event_size)
         new_slots_for_event = [slot[0] for slot in possible_slots[:event_size]]
-        print(new_slots_for_event)
         cursor = await self.session.execute(
             sql.select(models.Event).where(models.Event.uuid == event_id).options(selectinload(models.Event.slots))
         )
