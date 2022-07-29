@@ -31,6 +31,7 @@ class PostgresEventRepo(EventRepo):
         cursor = await self.session.execute(check_exist_query)
         if cursor.one_or_none():
             raise errors.EntityAlreadyExist
+        print(str(start_date), str(end_date))
         query__slots = sql.select(models.Slot).where(
             models.Slot.start_date.between(start_date, end_date),
         )
