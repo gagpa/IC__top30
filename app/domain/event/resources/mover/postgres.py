@@ -22,7 +22,9 @@ class PostgresEventMover(EventMover):
             join(models.Event, models.Event.id == models.pivot__slots_events.c.event_id). \
             where(models.Event.uuid == event_id)
         cursor = await self.session.execute(query__slots)
-        event_size = len(cursor.all())
+        slots = cursor.all()
+        print(slots)
+        event_size = len(slots)
         subquery__coach_id = sql.select(models.Student.coach_id). \
             join(models.Event). \
             where(models.Event.uuid == event_id). \
