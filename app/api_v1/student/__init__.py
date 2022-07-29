@@ -42,7 +42,7 @@ async def _find(
             phone=user.phone,
             patronymic=user.patronymic,
             has_access=user.has_access,
-            photo=f'https://top30mt.ru/api/v1/user/{student.user_id}/avatar',
+            photo=f'https://top30mt.ru/api/v1/user/{student.user_id}/avatar' if user.has_photo else None,
         )
     )
 
@@ -78,7 +78,7 @@ async def _filter(
                     patronymic=user.patronymic,
                     has_access=user.has_access,
                     coach_id=student.coach_id,
-                    photo=f'https://top30mt.ru/api/v1/user/{student.user_id}/avatar',
+                    photo=f'https://top30mt.ru/api/v1/user/{student.user_id}/avatar' if user.has_photo else None,
                 ) for user, student in zip(users, students.items)
             ],
         )
