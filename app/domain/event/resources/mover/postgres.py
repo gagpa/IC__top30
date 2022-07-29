@@ -20,7 +20,7 @@ class PostgresEventMover(EventMover):
         query__slots = sql.select(models.Slot, models.Event.uuid). \
             join(models.pivot__slots_events, models.pivot__slots_events.c.slot_id == models.Slot.id). \
             join(models.Event, models.Event.id == models.pivot__slots_events.c.event_id). \
-            where(models.Event.uuid == event_id).group_by(models.Slot.id)
+            where(models.Event.uuid == event_id)
         cursor = await self.session.execute(query__slots)
         slots = cursor.all()
         print([f'{slot[0].id - slot[1]}' for slot in slots])
