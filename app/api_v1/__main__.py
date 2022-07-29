@@ -7,7 +7,11 @@ from settings import AsyncPostgresSettings
 from .errors import add_handlers
 from .router import add_routers
 
-app = fastapi.FastAPI()
+app = fastapi.FastAPI(
+    title='TOP 30',
+    description='Сервис для выбора наставника и отслеживания уроков',
+    version='1.0',
+)
 
 add_routers(app)
 add_handlers(app)
@@ -23,7 +27,6 @@ app.add_middleware(
 @app.on_event('startup')
 async def create_tables():
     async with create_engine(AsyncPostgresSettings()).begin() as conn:
-        # await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
 
 

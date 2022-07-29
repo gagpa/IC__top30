@@ -47,11 +47,15 @@ async def get__refuse_a_personal_coach(session: AsyncSession = fastapi.Depends(g
     coach_changer = student.resources.personal_coach_changer.PostgresPersonalCoachChanger(session=session)
     event_deleter = event.resources.deleter.PostgrestEventDeleter(session=session)
     event_repo = event.resources.repo.PostgresEventRepo(session=session)
+    event_status_changer = event.resources.stutus_changer.PostgresEventStatusChanger(session=session)
+    slot_cleaner = event.resources.slot_cleaner.PostgresSlotCleaner(session=session)
     return student.use_cases.refuse_personal_coach.SoftRefusePersonalCoach(
         student_repo=student_repo,
         coach_changer=coach_changer,
         event_deleter=event_deleter,
         event_repo=event_repo,
+        event_status_changer=event_status_changer,
+        slot_cleaner=slot_cleaner,
     )
 
 
@@ -69,9 +73,13 @@ async def get__refuse_a_personal_student(session: AsyncSession = fastapi.Depends
     coach_changer = student.resources.personal_coach_changer.PostgresPersonalCoachChanger(session=session)
     event_deleter = event.resources.deleter.PostgrestEventDeleter(session=session)
     event_repo = event.resources.repo.PostgresEventRepo(session=session)
+    event_status_changer = event.resources.stutus_changer.PostgresEventStatusChanger(session=session)
+    slot_cleaner = event.resources.slot_cleaner.PostgresSlotCleaner(session=session)
     return coach.use_cases.refuse_personal_student.SoftRefusePersonalStudent(
         student_repo=student_repo,
         coach_changer=coach_changer,
         event_deleter=event_deleter,
         event_repo=event_repo,
+        event_status_changer=event_status_changer,
+        slot_cleaner=slot_cleaner,
     )
