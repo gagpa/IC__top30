@@ -78,8 +78,8 @@ class PostgresEventMover(EventMover):
         )
         return cursor.scalar()
 
-    async def __calculate__start_date(self, slots: list) -> datetime:
+    def __calculate__start_date(self, slots: list) -> datetime:
         return min([slot.start_date for slot in slots])
 
-    async def __calculate__end_date(self, slots: list) -> datetime:
+    def __calculate__end_date(self, slots: list) -> datetime:
         return max([slot.end_date for slot in slots])
