@@ -32,7 +32,6 @@ class PostgresEventRepo(EventRepo):
         cursor = await self.session.execute(check_exist_query)
         if cursor.one_or_none():
             raise errors.EntityAlreadyExist
-        print(str(start_date), str(end_date))
         subquery__coach_id = sql.select(models.Coach.id). \
             join(models.Student, models.Student.coach_id == models.Coach.id). \
             join(models.User, models.Student.user_id == models.User.id). \
@@ -44,7 +43,7 @@ class PostgresEventRepo(EventRepo):
             models.Slot.coach_id == subquery__coach_id,
         )
         cursor = await self.session.execute(query__slots)
-        slots = [slot for slot in cursor.all()]
+        slots = [slot[0] for slot in cursor.all()]
         new_event = models.Event(slots=slots, student_id=subquery__student_id, status=EventStatus.active)
         self.session.add(new_event)
         await self.session.flush()
