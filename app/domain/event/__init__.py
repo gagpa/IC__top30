@@ -3,3 +3,4 @@ from . import (
     resources,
     use_cases,
 )
+from .entity import EventEntity, ListEventEntity

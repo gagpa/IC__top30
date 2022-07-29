@@ -50,7 +50,7 @@ class PostgresEventMover(EventMover):
 
     async def __select__new_slots_for_event(
             self, event_id: UUID, new_start_date: datetime, event_size: int,
-    ) -> typing.List[models.Event]:
+    ):
         query = sql.select(models.Slot).where(
             models.Slot.coach_id == (
                 sql.select(models.Student.coach_id).join(models.Event).where(models.Event.uuid == event_id).subquery()
@@ -60,7 +60,7 @@ class PostgresEventMover(EventMover):
         cursor = await self.session.execute(query)
         return cursor.scalar()
 
-    async def __select__event(self, event_id: UUID) -> models.Event:
+    async def __select__event(self, event_id: UUID):
         query = sql.select(models.Event). \
             where(models.Event.uuid == event_id). \
             options(selectinload(models.Event.slots))
