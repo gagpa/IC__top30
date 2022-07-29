@@ -60,7 +60,7 @@ class PostgresUserRepo(UserRepo):
             join(models.Photo, models.Photo.user_id == models.User.id). \
             where(models.User.uuid == id)
         cursor = await self.session.execute(query)
-        user_from_db = cursor.all()
+        user_from_db = cursor.one_or_none()
         print(user_from_db)
         if not user_from_db:
             raise errors.EntityNotFounded()
