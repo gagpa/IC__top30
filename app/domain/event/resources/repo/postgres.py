@@ -42,8 +42,8 @@ class PostgresEventRepo(EventRepo):
             models.Slot.coach_id == subquery__coach_id,
         )
         cursor = await self.session.execute(query__slots)
-        slots = [(slot[0].coach_id, str(slot[0].start_date)) for slot in cursor.all()]
-        print(slots)
+        slots = [slot for slot in cursor.all()]
+        print([(slot[0].coach_id, str(slot[0].start_date)) for slot in slots])
         new_event = models.Event(slots=slots, student_id=subquery__student_id, status=EventStatus.active)
         self.session.add(new_event)
         await self.session.flush()
