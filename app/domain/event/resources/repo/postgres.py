@@ -39,7 +39,7 @@ class PostgresEventRepo(EventRepo):
             subquery()
         query__slots = sql.select(models.Slot).where(
             models.Slot.start_date >= start_date,
-            models.Slot.end_date < end_date,
+            models.Slot.end_date <= end_date,
             models.Slot.coach_id == subquery__coach_id,
         )
         cursor = await self.session.execute(query__slots)
