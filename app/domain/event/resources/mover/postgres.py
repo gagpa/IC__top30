@@ -29,7 +29,6 @@ class PostgresEventMover(EventMover):
         event.slots = new_slots_for_event
         self.session.add(event)
 
-        event = await self.__select__event(event_id)
         return EventEntity(
             id=event.uuid,
             status=event.status,
