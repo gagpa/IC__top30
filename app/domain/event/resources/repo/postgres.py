@@ -22,7 +22,8 @@ class PostgresEventRepo(EventRepo):
         subquery__student_id = sql.select(models.Student.id).join(models.User).where(
             models.User.uuid == student_id).subquery()
         subquery__slots_ids = sql.select(models.Slot.id).where(
-            models.Slot.start_date.between(start_date, end_date),
+            models.Slot.start_date >= start_date,
+            models.Slot.end_date < end_date,
         ).subquery()
         check_exist_query = sql.select(models.Event).join(models.pivot__slots_events).where(
             models.Event.student_id == subquery__student_id,
@@ -38,12 +39,12 @@ class PostgresEventRepo(EventRepo):
             where(models.User.uuid == student_id). \
             subquery()
         query__slots = sql.select(models.Slot).where(
-            models.Slot.start_date.between(start_date, end_date),
+            models.Slot.start_date >= start_date,
+            models.Slot.end_date < end_date,
             models.Slot.coach_id == subquery__coach_id,
         )
         cursor = await self.session.execute(query__slots)
         slots = [slot for slot in cursor.all()]
-        print([(slot[0].coach_id, str(slot[0].start_date)) for slot in slots])
         new_event = models.Event(slots=slots, student_id=subquery__student_id, status=EventStatus.active)
         self.session.add(new_event)
         await self.session.flush()
