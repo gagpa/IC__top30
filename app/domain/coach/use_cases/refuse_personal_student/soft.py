@@ -37,8 +37,7 @@ class SoftRefusePersonalStudent(RefusePersonalStudent):
             await self.slot_cleaner.clean(event.id)
             if time_for_event != abs(time_for_event):
                 continue
-            if time_for_event < timedelta(hours=24):
-                print('BURNED')
+            elif time_for_event < timedelta(hours=24):
                 await self.event_status_changer.change(status=EventStatus.burned, event_id=event.id)
             else:
                 await self.event_deleter.delete(event_id=event.id)

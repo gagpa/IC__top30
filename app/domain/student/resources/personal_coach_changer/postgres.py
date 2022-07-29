@@ -24,12 +24,3 @@ class PostgresPersonalCoachChanger(PersonalCoachChanger):
             query.values(coach_id=subquery_new_coach),
             execution_options=immutabledict({'synchronize_session': 'fetch'}),
         )
-        # student_from_db = cursor.one()[0]
-        # return StudentEntity(
-        #     user_id=student,
-        #     position=student_from_db.position,
-        #     organization=student_from_db.organization,
-        #     experience=student_from_db.experience,
-        #     supervisor=student_from_db.supervisor,
-        #     coach_id=new_coach,
-        # )

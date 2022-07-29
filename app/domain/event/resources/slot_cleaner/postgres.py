@@ -21,4 +21,3 @@ class PostgresSlotCleaner(SlotCleaner):
 
         test_query = sql.select(models.Event.id).where(models.Event.uuid == event_id)
         cursor = await self.session.execute(test_query)
-        print(cursor.scalar())
