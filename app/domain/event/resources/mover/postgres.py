@@ -58,7 +58,10 @@ class PostgresEventMover(EventMover):
             models.Slot.start_date >= new_start_date,
         ).order_by(models.Slot.start_date).limit(event_size)
         cursor = await self.session.execute(query)
-        return cursor.scalar()
+        slots = cursor.scalar()
+        if isinstance(slots, list):
+            return slots
+        return [slots]
 
     async def __select__event(self, event_id: UUID):
         query = sql.select(models.Event). \
