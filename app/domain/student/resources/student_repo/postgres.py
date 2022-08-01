@@ -52,7 +52,7 @@ class PostgresStudentRepo(StudentRepo):
             student_from_db = student_from_db[0]
             if student_from_db.coach_id:
                 query = select(models.User.uuid).join(models.Coach).where(models.Coach.id == student_from_db.coach_id)
-                cursor = await self.session.execute(query.where(models.User.is_deleted == False))
+                cursor = await self.session.execute(query)
                 coach_id = cursor.one()[0]
             else:
                 coach_id = None

@@ -57,7 +57,7 @@ class PostgresCoachRepo(CoachRepo):
         query = select(models.Coach).join(models.User).where(models.User.uuid == user_id)
         cursor = await self.session.execute(query)
         try:
-            coach_from_db: typing.Optional[models.Coach] = cursor.one()
+            coach_from_db: models.Coach = cursor.one()
             coach_from_db = coach_from_db[0]
         except NoResultFound:
             raise errors.EntityNotFounded()
@@ -70,7 +70,7 @@ class PostgresCoachRepo(CoachRepo):
             experience=coach_from_db.experience,
             profession_competencies=coach_from_db.profession_competencies,
             total_seats=coach_from_db.total_seats,
-            students=[student_id[0] for student_id in cursor.all()]
+            students=[student_id[0] for student_id in cursor.all()],
         )
 
     async def filter(
