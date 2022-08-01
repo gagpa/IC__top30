@@ -75,14 +75,13 @@ class PostgresStudentRepo(StudentRepo):
     ) -> ListStudentEntity:
         query = select(models.Student). \
             join(models.User). \
-            options(joinedload(models.Student.user_data)). \
-            where(models.User.is_deleted == False)
+            options(joinedload(models.Student.user_data))
         if coach_id:
             subquery = select(models.Coach.id).join(models.User).where(models.User.uuid == coach_id).subquery()
             query = query.where(models.Student.coach_id == subquery)
         query = query.where(models.User.has_access == has_access)
         query = query.limit(self.limit).offset(page * self.limit)
-        cursor = await self.session.execute(query)
+        cursor = await self.session.execute(query.where(models.User.is_deleted == False))
         students = [student[0] for student in cursor.all()]
         coaches_ids = [student.coach_id for student in students if student.coach_id]
         coaches_query = select(models.Coach.id, models.User.uuid).join(models.Coach).where(
