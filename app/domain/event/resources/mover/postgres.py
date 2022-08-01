@@ -27,6 +27,10 @@ class PostgresEventMover(EventMover):
         except NoResultFound:
             raise errors.EntityNotFounded()
         event.slots = new_slots_for_event
+        start_date = self.__calculate__start_date(new_slots_for_event)
+        end_date = self.__calculate__end_date(new_slots_for_event)
+        event.start_date = start_date
+        event.end_date = end_date
         self.session.add(event)
 
         return EventEntity(
@@ -34,8 +38,8 @@ class PostgresEventMover(EventMover):
             status=event.status,
             coach=await self.__select__coach_id(new_slots_for_event[0]),
             student=await self.__select__student_id(event),
-            start_date=self.__calculate__start_date(new_slots_for_event),
-            end_date=self.__calculate__end_date(new_slots_for_event),
+            start_date=start_date,
+            end_date=end_date,
         )
 
     async def __select__event_size(self, event_id: UUID) -> int:
