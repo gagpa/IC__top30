@@ -42,6 +42,11 @@ async def only__student(client: Client = fastapi.Depends(get__client)):
         raise fastapi.HTTPException(403, detail='Нет доступа')
 
 
+async def only__coach(client: Client = fastapi.Depends(get__client)):
+    if client.role != auth.entity.Role.COACH:
+        raise fastapi.HTTPException(403, detail='Нет доступа')
+
+
 async def get__refuse_a_personal_coach(session: AsyncSession = fastapi.Depends(get__session)):
     student_repo = student.resources.student_repo.PostgresStudentRepo(session=session)
     coach_changer = student.resources.personal_coach_changer.PostgresPersonalCoachChanger(session=session)
