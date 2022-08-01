@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api_v1.base.client_requests import Client
 from api_v1.base.dependencies import get__session, get__client
-from domain import student, user, auth
+from domain import student, user, auth, event
 
 
 async def get_find_student_in_repo(session: AsyncSession = fastapi.Depends(get__session)):
@@ -28,7 +28,13 @@ async def get__delete_user_from_repo(session: AsyncSession = fastapi.Depends(get
 
 async def get__delete_student_from_repo(session: AsyncSession = fastapi.Depends(get__session)):
     student_deleter = student.resources.deleter.PostgresStudentDeleter(session=session)
-    return student.use_cases.delete.DeleteStudentFromRepo(student_deleter=student_deleter)
+    event_deleter = event.resources.deleter.PostgrestEventDeleter(session=session)
+    event_repo = event.resources.repo.PostgresEventRepo(session=session)
+    return student.use_cases.delete.DeleteStudentFromRepo(
+        student_deleter=student_deleter,
+        event_deleter=event_deleter,
+        event_repo=event_repo,
+    )
 
 
 async def only__admin(client: Client = fastapi.Depends(get__client)):
