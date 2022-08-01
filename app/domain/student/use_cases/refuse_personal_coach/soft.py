@@ -34,12 +34,11 @@ class SoftRefusePersonalCoach(RefusePersonalCoach):
         events = await self.event_repo.filter(student_id=student_id, coach_id=None)
         for event in events.items:
             time_for_event = event.start_date - datetime.now()
-            print(time_for_event, time_for_event != abs(time_for_event), time_for_event < timedelta(hours=24))
             await self.slot_cleaner.clean(event.id)
-            if time_for_event != abs(time_for_event):
-                continue
-            elif time_for_event < timedelta(hours=24):
-                await self.event_status_changer.change(status=EventStatus.burned, event_id=event.id)
-            else:
-                await self.event_deleter.delete(event_id=event.id)
+            # if time_for_event != abs(time_for_event):
+            #     continue
+            # elif time_for_event < timedelta(hours=24):
+            #     await self.event_status_changer.change(status=EventStatus.burned, event_id=event.id)
+            # else:
+            #     await self.event_deleter.delete(event_id=event.id)
         await self.coach_changer.change(student.user_id, new_coach=None)
