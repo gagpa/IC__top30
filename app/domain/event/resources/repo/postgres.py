@@ -117,6 +117,7 @@ class PostgresEventRepo(EventRepo):
             join(student_user__alias, student_user__alias.id == models.Student.user_id). \
             join(models.Coach, models.Event.coach_id == models.Coach.id). \
             join(coach_user__alias, coach_user__alias.id == models.Coach.user_id). \
+            where(student_user__alias.is_deleted == False). \
             order_by(models.Event.start_date). \
             group_by(models.Event.id, student_user__alias, coach_user__alias)
         if coach_id:
