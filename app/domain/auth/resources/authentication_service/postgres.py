@@ -16,7 +16,7 @@ class PostgresAuthenticationService(AuthenticationService):
         self.session = session
 
     async def auth(self, login: str) -> typing.Tuple[UUID, str]:
-        query = select(models.User).where(models.User.email == login)
+        query = select(models.User).where(models.User.email == login, models.User.is_deleted == False)
         cursor = await self.session.execute(query)
         try:
             user = cursor.one()[0]

@@ -20,7 +20,7 @@ class PostgresPersonalCoachChanger(PersonalCoachChanger):
         query = sql.update(models.Student).where(models.Student.user_id == subquery_user)
         subquery_new_coach = sql.select(models.Coach.id).join(models.User).where(
             models.User.uuid == new_coach).subquery()
-        cursor = await self.session.execute(
+        await self.session.execute(
             query.values(coach_id=subquery_new_coach),
             execution_options=immutabledict({'synchronize_session': 'fetch'}),
         )

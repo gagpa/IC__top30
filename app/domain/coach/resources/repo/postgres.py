@@ -4,7 +4,7 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload, selectinload
+from sqlalchemy.orm import selectinload
 
 import errors
 from db.postgres import models
@@ -55,7 +55,7 @@ class PostgresCoachRepo(CoachRepo):
 
     async def find(self, user_id: UUID) -> CoachEntity:
         query = select(models.Coach).join(models.User).where(models.User.uuid == user_id)
-        cursor = await self.session.execute(query)
+        cursor = await self.session.execute(query.where(models.User.is_deleted == False))
         try:
             coach_from_db: typing.Optional[models.Coach] = cursor.one()
             coach_from_db = coach_from_db[0]
@@ -79,8 +79,13 @@ class PostgresCoachRepo(CoachRepo):
             is_free: typing.Optional[bool] = None,
             page: int = 0,
     ) -> ListCoachEntity:
-        query = select(models.Coach).join(models.User).options(
-            selectinload(models.Coach.user_data), selectinload(models.Coach.students))
+        query = select(models.Coach). \
+            join(models.User). \
+            options(
+            selectinload(models.Coach.user_data),
+            selectinload(models.Coach.students),
+        ). \
+            where(models.User.is_deleted == False)
         # if isinstance(is_free, bool):
         #     subquery = select(models.Coach.id, func(models.User).count()).join(models.Coach).group_by(models.Coach.id)
         #     if is_free:

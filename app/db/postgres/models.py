@@ -23,7 +23,7 @@ class User(Base):
     patronymic = sql.Column(sql.String, nullable=False)
     phone = sql.Column(sql.String, nullable=False)
     has_access = sql.Column(sql.Boolean, default=False)
-
+    is_deleted = sql.Column(sql.Boolean, default=False)
     coach_data = relationship('Coach', uselist=False)
     student_data = relationship('Student', uselist=False)
     admin_data = relationship('Admin', uselist=False)

@@ -1,7 +1,8 @@
 from uuid import UUID
 
-from sqlalchemy import delete
+from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.util._collections import immutabledict
 
 from db.postgres import models
 from .base import UserDeleter
@@ -13,5 +14,8 @@ class PostgresUserDeleter(UserDeleter):
         self.session = session
 
     async def delete(self, id: UUID):
-        query = delete(models.User).where(models.User.uuid == id)
-        await self.session.execute(query)
+        query = update(models.User).where(models.User.uuid == id).values(is_deleted=True)
+        await self.session.execute(
+            query,
+            execution_options=immutabledict({'synchronize_session': 'fetch'}),
+        )
