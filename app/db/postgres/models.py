@@ -127,7 +127,7 @@ class Event(Base):
     student_id = sql.Column(sql.Integer, sql.ForeignKey('students.id', ondelete='CASCADE'), nullable=False)
     coach_id = sql.Column(sql.Integer, sql.ForeignKey('coaches.id', ondelete='CASCADE'), nullable=False)
     student = relationship('Student', back_populates='events')
-    coach = relationship('Coach', back_populates='coaches')
+    coach = relationship('Coach', back_populates='events')
     slots = relationship(
         'Slot',
         secondary=pivot__slots_events,
