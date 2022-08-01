@@ -44,7 +44,13 @@ class PostgresEventRepo(EventRepo):
         )
         cursor = await self.session.execute(query__slots)
         slots = [slot[0] for slot in cursor.all()]
-        new_event = models.Event(slots=slots, student_id=subquery__student_id, status=EventStatus.active)
+        new_event = models.Event(
+            start_date=start_date,
+            end_date=end_date,
+            slots=slots,
+            student_id=subquery__student_id,
+            status=EventStatus.active,
+        )
         self.session.add(new_event)
         await self.session.flush()
 
@@ -88,8 +94,8 @@ class PostgresEventRepo(EventRepo):
             status=event_from_db.status,
             coach=coach_id,
             student=student_id,
-            start_date=min([slot.start_date for slot in event_from_db.slots]),
-            end_date=max([slot.end_date for slot in event_from_db.slots]),
+            start_date=event_from_db.start_date,
+            end_date=event_from_db.end_date,
         )
 
     async def filter(
@@ -100,27 +106,18 @@ class PostgresEventRepo(EventRepo):
     ) -> ListEventEntity:
         coach_user__alias = aliased(models.User)
         student_user__alias = aliased(models.User)
-        min_date__alias = sql.func.min(models.Slot.start_date)
-        max_date__alias = sql.func.max(models.Slot.end_date)
 
         query = sql.select(
             models.Event,
             student_user__alias.uuid,
             coach_user__alias.uuid,
-            min_date__alias,
-            max_date__alias,
         ). \
-            join(models.pivot__slots_events, models.pivot__slots_events.c.event_id == models.Event.id). \
-            join(models.Slot, models.Slot.id == models.pivot__slots_events.c.slot_id). \
             join(models.Student, models.Event.student_id == models.Student.id). \
             join(student_user__alias, student_user__alias.id == models.Student.user_id). \
             join(models.Coach, models.Coach.id == models.Student.coach_id). \
             join(coach_user__alias, coach_user__alias.id == models.Coach.user_id). \
-            options(selectinload(models.Event.slots)). \
-            order_by(
-            min_date__alias,
-            max_date__alias,
-        ).group_by(models.Event.id, student_user__alias, coach_user__alias)
+            order_by(models.Event.start_date). \
+            group_by(models.Event.id, student_user__alias, coach_user__alias)
         if coach_id:
             subquery_students_id_of_coach = sql.select(models.Student.id). \
                 join(models.Coach, models.Student.coach_id == models.Coach.id). \
@@ -140,8 +137,8 @@ class PostgresEventRepo(EventRepo):
                     status=data[0].status,
                     student=data[1],
                     coach=data[2],
-                    start_date=data[3],
-                    end_date=data[4],
+                    start_date=data[0].start_date,
+                    end_date=data[0].end_date,
                 )
                 for data in cursor.all()
             ],

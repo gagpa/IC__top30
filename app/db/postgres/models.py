@@ -120,6 +120,8 @@ class Event(Base):
 
     id = sql.Column(sql.Integer, primary_key=True)
     uuid = sql.Column(UUID_field(as_uuid=True), nullable=False, default=uuid4)
+    start_date = sql.Column(sql.DateTime, nullable=False)
+    end_date = sql.Column(sql.DateTime, nullable=False)
     status = sql.Column(sql.Enum(EventStatus), nullable=False)
     student_id = sql.Column(sql.Integer, sql.ForeignKey('students.id', ondelete='CASCADE'), nullable=False)
 
