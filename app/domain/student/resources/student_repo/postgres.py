@@ -46,7 +46,7 @@ class PostgresStudentRepo(StudentRepo):
 
     async def find(self, user_id: UUID) -> StudentEntity:
         query = select(models.Student).join(models.User).where(models.User.uuid == user_id)
-        cursor = await self.session.execute(query.where(models.User.is_deleted == False))
+        cursor = await self.session.execute(query)
         try:
             student_from_db: typing.Optional[models.Student] = cursor.one()
             student_from_db = student_from_db[0]

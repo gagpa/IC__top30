@@ -55,7 +55,7 @@ class PostgresCoachRepo(CoachRepo):
 
     async def find(self, user_id: UUID) -> CoachEntity:
         query = select(models.Coach).join(models.User).where(models.User.uuid == user_id)
-        cursor = await self.session.execute(query.where(models.User.is_deleted == False))
+        cursor = await self.session.execute(query)
         try:
             coach_from_db: typing.Optional[models.Coach] = cursor.one()
             coach_from_db = coach_from_db[0]
