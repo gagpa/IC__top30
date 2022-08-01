@@ -79,7 +79,7 @@ class PostgresUserRepo(UserRepo):
     async def filter(self, page: int = 0) -> ListUserEntity:
         query = select(models.User, models.Photo.id).outerjoin(models.Photo)
         query = query.limit(self.limit).offset((page + 1) * self.limit)
-        cursor = await self.session.execute(query)
+        cursor = await self.session.execute(query.where(models.User.is_deleted == False))
         return ListUserEntity(
             max_page=1,
             total=1,
