@@ -7,6 +7,8 @@ from domain import admin, coach, student, event, user, slot
 
 async def get__delete_coach_from_repo(session: AsyncSession = fastapi.Depends(get__session)):
     coach_deleter = coach.resources.deleter.PostgresCoachDeleter(session=session)
+    coach_repo = coach.resources.repo.PostgresCoachRepo(session=session)
+    coach_changer = student.resources.personal_coach_changer.PostgresPersonalCoachChanger(session=session)
     event_status_changer = event.resources.stutus_changer.PostgresEventStatusChanger(session=session)
     event_repo = event.resources.repo.PostgresEventRepo(session=session)
     event_deleter = event.resources.deleter.PostgrestEventDeleter(session=session)
@@ -15,6 +17,8 @@ async def get__delete_coach_from_repo(session: AsyncSession = fastapi.Depends(ge
         event_status_changer=event_status_changer,
         event_repo=event_repo,
         event_deleter=event_deleter,
+        coach_repo=coach_repo,
+        coach_changer=coach_changer,
     )
 
 
