@@ -45,6 +45,7 @@ class Coach(Base):
     user_data = relationship('User', back_populates='coach_data')
     students = relationship('Student', back_populates='coach')
     slots = relationship('Slot', back_populates='coach')
+    events = relationship('Event', back_populates='coach')
 
 
 class Student(Base):
@@ -124,8 +125,9 @@ class Event(Base):
     end_date = sql.Column(sql.DateTime, nullable=False)
     status = sql.Column(sql.Enum(EventStatus), nullable=False)
     student_id = sql.Column(sql.Integer, sql.ForeignKey('students.id', ondelete='CASCADE'), nullable=False)
-
+    coach_id = sql.Column(sql.Integer, sql.ForeignKey('coaches.id', ondelete='CASCADE'), nullable=False)
     student = relationship('Student', back_populates='events')
+    coach = relationship('Coach', back_populates='coaches')
     slots = relationship(
         'Slot',
         secondary=pivot__slots_events,

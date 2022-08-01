@@ -49,6 +49,7 @@ class PostgresEventRepo(EventRepo):
             end_date=end_date,
             slots=slots,
             student_id=subquery__student_id,
+            coach_id=subquery__coach_id,
             status=EventStatus.active,
         )
         self.session.add(new_event)
@@ -114,7 +115,7 @@ class PostgresEventRepo(EventRepo):
         ). \
             join(models.Student, models.Event.student_id == models.Student.id). \
             join(student_user__alias, student_user__alias.id == models.Student.user_id). \
-            join(models.Coach, models.Coach.id == models.Student.coach_id). \
+            join(models.Coach, models.Event.coach_id == models.Coach.id). \
             join(coach_user__alias, coach_user__alias.id == models.Coach.user_id). \
             order_by(models.Event.start_date). \
             group_by(models.Event.id, student_user__alias, coach_user__alias)
